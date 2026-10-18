@@ -2,7 +2,7 @@ name: Release
 on:
   push:
     tags:
-      - "rukh_*"
+      - "v*"
 permissions:
   contents: write
 jobs:
