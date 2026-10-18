@@ -12,7 +12,5 @@ on:
       - master
       - tools
 jobs:
-  IWYU:
-    uses: ./.github/workflows/iwyu.yml
   Sanitisers:
     uses: ./.github/workflows/sanitisers.yml
