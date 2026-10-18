@@ -1,10 +1,6 @@
 name: Release build
 on:
   workflow_call:
-    outputs:
-      matrix:
-        description: Release build matrix
-        value: ${{ jobs.Matrix.outputs.matrix }}
 jobs:
   Matrix:
     runs-on: ubuntu-latest
@@ -15,11 +11,88 @@ jobs:
         with:
           persist-credentials: false
       - id: set-matrix
-        run: |
-          TASKS=$(echo $(cat .github/ci/matrix.json) )
-          echo "MATRIX=$TASKS" >> $GITHUB_OUTPUT
-  Compilation:
+        run: echo "matrix=$(jq -c . .github/workflows/release-build-matrix.json)" >> "$GITHUB_OUTPUT"
+  Build:
     needs: [Matrix]
-    uses: ./.github/workflows/compilation.yml
-    with:
-      matrix: ${{ needs.Matrix.outputs.matrix }}
+    name: ${{ matrix.config.name }} ${{ matrix.binaries }}
+    runs-on: ${{ matrix.config.os }}
+    env:
+      COMPCXX: ${{ matrix.config.compiler }}
+      COMP: ${{ matrix.config.comp }}
+      EXT: ${{ matrix.config.ext }}
+      NAME: ${{ matrix.config.simple_name }}
+      BINARY: ${{ matrix.binaries }}
+      SDE: ${{ matrix.config.sde }}
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.Matrix.outputs.matrix) }}
+    defaults:
+      run:
+        working-directory: src
+        shell: ${{ matrix.config.shell }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Install fixed GCC on Linux
+        if: runner.os == 'Linux'
+        uses: egor-tensin/setup-gcc@eaa888eb19115a521fa72b65cd94fe1f25bbcaac
+        with:
+          version: 11
+
+      - name: Setup msys and install required packages
+        if: runner.os == 'Windows'
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: ${{ matrix.config.msys_sys }}
+          install: mingw-w64-${{ matrix.config.msys_env }} make git zip
+
+      - name: Download SDE package
+        if: runner.os == 'Linux' || runner.os == 'Windows'
+        uses: petarpetrovt/setup-sde@f0fa5971dc275704531e94264dd23250c442aa41
+        with:
+          environmentVariableName: SDE_DIR
+          sdeVersion: 9.33.0
+
+      - name: Prepare build environment
+        uses: ./.github/actions/build-setup
+        with:
+          compiler: ${{ matrix.config.compiler }}
+          shell: ${{ matrix.config.shell }}
+
+      - name: Show compiler cpu info
+        run: |
+          if [[ "$COMPCXX" == clang* ]]; then
+             $COMPCXX -E - -march=native -###
+          else
+            $COMPCXX -Q -march=native --help=target
+          fi
+
+      - name: Build ${{ matrix.binaries }}
+        uses: ./.github/actions/build
+        with:
+          target: profile-build
+          make_args: ARCH=${{ matrix.binaries }} COMP=${{ matrix.config.comp }}
+          run_prefix: ${{ matrix.config.sde }}
+
+      - name: Strip binary
+        run: make strip ARCH=$BINARY COMP=$COMP
+
+      - name: Check binary signature
+        run: RUN_PREFIX="$SDE" ../tests/signature.sh $benchref
+
+      - name: Rename binary
+        run: mv ./shashchess$EXT ../rukh-$NAME-$BINARY$EXT
+
+      - name: Remove non src files
+        run: git clean -fx
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.config.simple_name }} ${{ matrix.binaries }}
+          path: |
+            .
+            !.git
+            !.output

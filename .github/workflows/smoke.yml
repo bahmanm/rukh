@@ -20,9 +20,17 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Prepare build environment
+        uses: ./.github/actions/build-setup
+        with:
+          compiler: g++
+          shell: bash
+
       - name: Build debug engine
-        working-directory: src
-        run: make -j build debug=yes
+        uses: ./.github/actions/build
+        with:
+          target: build
+          make_args: debug=yes
 
       - name: Checkout fastchess
         uses: actions/checkout@v4
@@ -57,9 +65,16 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Prepare build environment
+        uses: ./.github/actions/build-setup
+        with:
+          compiler: g++
+          shell: bash
+
       - name: Build engine
-        working-directory: src
-        run: make -j profile-build
+        uses: ./.github/actions/build
+        with:
+          target: profile-build
 
       - name: Checkout matetrack
         uses: actions/checkout@v4

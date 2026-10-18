@@ -1,0 +1,40 @@
+name: Build
+description: Build a Rukh target on the current runner
+inputs:
+  target:
+    description: Make target to run
+    required: true
+  make_args:
+    description: Additional arguments to pass to make
+    default: ""
+  run_prefix:
+    description: Command prefix for running the engine during profile builds
+    default: ""
+  cxxflags:
+    description: C++ compiler flags
+    default: ""
+  ldflags:
+    description: Linker flags
+    default: ""
+runs:
+  using: composite
+  steps:
+    - name: Build on Unix
+      if: runner.os != 'Windows'
+      uses: ./.github/actions/build-unix
+      with:
+        target: ${{ inputs.target }}
+        make_args: ${{ inputs.make_args }}
+        run_prefix: ${{ inputs.run_prefix }}
+        cxxflags: ${{ inputs.cxxflags }}
+        ldflags: ${{ inputs.ldflags }}
+
+    - name: Build on Windoze
+      if: runner.os == 'Windows'
+      uses: ./.github/actions/build-windoze
+      with:
+        target: ${{ inputs.target }}
+        make_args: ${{ inputs.make_args }}
+        run_prefix: ${{ inputs.run_prefix }}
+        cxxflags: ${{ inputs.cxxflags }}
+        ldflags: ${{ inputs.ldflags }}
