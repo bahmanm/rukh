@@ -55,7 +55,7 @@ jobs:
       - name: Download required linux packages
         run: |
           sudo apt update
-          sudo apt install expect valgrind g++-multilib
+          sudo apt install expect valgrind
 
       - name: Download the used network from the fishtest framework
         run: make net
