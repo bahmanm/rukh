@@ -109,7 +109,6 @@ jobs:
           make -j4 ARCH=x86-64-avx2 build
           ../tests/signature.sh $benchref
 
-      # Test a deprecated arch
       - name: Test x86-64-modern build
         if: matrix.config.run_64bit_tests
         run: |
@@ -159,7 +158,6 @@ jobs:
           make -j4 ARCH=apple-silicon build
           ../tests/signature.sh $benchref
 
-      # Other tests
 
       - name: Check perft and search reproducibility
         if: matrix.config.run_64bit_tests

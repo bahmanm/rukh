@@ -84,7 +84,6 @@ jobs:
         id: commit_date
         run: echo "COMMIT_DATE=$(git show -s --date=format:'%Y%m%d' --format=%cd HEAD)" >> $GITHUB_ENV
 
-      # Make sure that an old ci that still runs on master doesn't recreate a prerelease
       - name: Check Pullable Commits
         id: check_commits
         run: |
