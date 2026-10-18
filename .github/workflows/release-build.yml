@@ -1,0 +1,25 @@
+name: Release build
+on:
+  workflow_call:
+    outputs:
+      matrix:
+        description: Release build matrix
+        value: ${{ jobs.Matrix.outputs.matrix }}
+jobs:
+  Matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - id: set-matrix
+        run: |
+          TASKS=$(echo $(cat .github/ci/matrix.json) )
+          echo "MATRIX=$TASKS" >> $GITHUB_OUTPUT
+  Compilation:
+    needs: [Matrix]
+    uses: ./.github/workflows/compilation.yml
+    with:
+      matrix: ${{ needs.Matrix.outputs.matrix }}

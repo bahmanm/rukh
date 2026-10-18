@@ -1,0 +1,64 @@
+name: Release
+on:
+  push:
+    tags:
+      - "rukh_*"
+permissions:
+  contents: write
+jobs:
+  Build:
+    uses: ./.github/workflows/release-build.yml
+  Package:
+    needs: [Build]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.Build.outputs.matrix) }}
+    env:
+      EXT: ${{ matrix.config.ext }}
+      NAME: ${{ matrix.config.simple_name }}
+      BINARY: ${{ matrix.binaries }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ matrix.config.simple_name }} ${{ matrix.binaries }}
+          path: build-artifact
+      - name: Create package
+        run: |
+          mkdir rukh
+          cp -r build-artifact/src build-artifact/scripts rukh/
+          cp build-artifact/rukh-$NAME-$BINARY$EXT rukh/
+          cp build-artifact/Copying.txt build-artifact/AUTHORS build-artifact/CITATION.cff build-artifact/README.md build-artifact/CONTRIBUTING.md rukh/
+      - name: Create archive
+        run: |
+          if [[ "$EXT" == ".exe" ]]; then
+            zip -r rukh-$NAME-$BINARY.zip rukh
+          else
+            tar -cf rukh-$NAME-$BINARY.tar rukh
+          fi
+      - name: Upload release package
+        uses: actions/upload-artifact@v4
+        with:
+          name: rukh-${{ matrix.config.simple_name }}-${{ matrix.binaries }}
+          path: rukh-${{ matrix.config.simple_name }}-${{ matrix.binaries }}.${{ matrix.config.archive_ext }}
+          if-no-files-found: error
+  Publish:
+    needs: [Package]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download release packages
+        uses: actions/download-artifact@v4
+        with:
+          pattern: rukh-*
+          path: release-assets
+          merge-multiple: true
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@4634c16e79c963813287e889244c50009e7f0981
+        with:
+          name: ${{ github.ref_name }}
+          tag_name: ${{ github.ref_name }}
+          files: release-assets/*

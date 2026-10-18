@@ -69,12 +69,12 @@ jobs:
           make -j4 profile-build ARCH=$BINARY COMP=$COMP RUN_PREFIX="$SDE"
           make strip ARCH=$BINARY COMP=$COMP
           RUN_PREFIX="$SDE" ../tests/signature.sh $benchref
-          mv ./shashchess$EXT ../shashchess-$NAME-$BINARY$EXT
+          mv ./shashchess$EXT ../rukh-$NAME-$BINARY$EXT
 
       - name: Remove non src files
         run: git clean -fx
 
-      - name: Upload artifact for (pre)-release
+      - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.config.simple_name }} ${{ matrix.binaries }}
