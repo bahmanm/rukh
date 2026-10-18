@@ -48,20 +48,11 @@ jobs:
           environmentVariableName: SDE_DIR
           sdeVersion: 9.33.0
 
-      - name: Download the used network from the fishtest framework
-        run: make net
-
-      - name: Check compiler
-        run: $COMPCXX -v
-
-      - name: Test help target
-        run: make help
-
-      - name: Check git
-        run: git --version
-
-      - name: Check compiler
-        run: $COMPCXX -v
+      - name: Prepare Rukh build environment
+        uses: ./.github/actions/build-setup
+        with:
+          compiler: ${{ matrix.config.compiler }}
+          shell: ${{ matrix.config.shell }}
 
       - name: Show compiler cpu info
         run: |

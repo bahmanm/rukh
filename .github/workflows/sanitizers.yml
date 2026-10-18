@@ -57,17 +57,11 @@ jobs:
           sudo apt update
           sudo apt install expect valgrind
 
-      - name: Download the used network from the fishtest framework
-        run: make net
-
-      - name: Check compiler
-        run: $COMPCXX -v
-
-      - name: Test help target
-        run: make help
-
-      - name: Check git
-        run: git --version
+      - name: Prepare Rukh build environment
+        uses: ./.github/actions/build-setup
+        with:
+          compiler: ${{ matrix.config.compiler }}
+          shell: ${{ matrix.config.shell }}
 
       # Since Linux Kernel 6.5 we are getting false positives from the ci,
       # lower the ALSR entropy to disable ALSR, which works as a temporary workaround.
