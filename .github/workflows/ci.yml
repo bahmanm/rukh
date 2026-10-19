@@ -1,4 +1,4 @@
-name: CI
+name: ci
 on:
   push:
     branches:
@@ -10,8 +10,8 @@ on:
       - master
       - tools
 jobs:
-  Test-Targets:
-    name: ${{ matrix.config.name }}
+  ci__tests:
+    name: ci__${{ matrix.config.check_label }}
     runs-on: ${{ matrix.config.os }}
     env:
       COMPCXX: ${{ matrix.config.compiler }}
@@ -21,25 +21,25 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - name: Ubuntu 22.04 GCC
+          - check_label: linux-gcc
             os: ubuntu-22.04
             compiler: g++
             comp: gcc
             run_64bit_tests: true
             shell: bash
-          - name: Ubuntu 22.04 Clang
+          - check_label: linux-clang
             os: ubuntu-22.04
             compiler: clang++
             comp: clang
             run_64bit_tests: true
             shell: bash
-          - name: macOS 14 Apple Clang M1
+          - check_label: macos-arm
             os: macos-14
             compiler: clang++
             comp: clang
             run_m1_tests: true
             shell: bash
-          - name: Windows 2022 Mingw-w64 GCC x86_64
+          - check_label: windoze-gcc
             os: windows-2022
             compiler: g++
             comp: mingw
@@ -47,7 +47,7 @@ jobs:
             msys_sys: mingw64
             msys_env: x86_64-gcc
             shell: msys2 {0}
-          - name: Windows 2022 Mingw-w64 Clang x86_64
+          - check_label: windoze-clang
             os: windows-2022
             compiler: clang++
             comp: clang
@@ -65,24 +65,24 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Download required linux packages
+      - name: Install required Linux packages
         if: runner.os == 'Linux'
         run: |
           sudo apt update
           sudo apt install expect valgrind
 
-      - name: Download required macOS packages
+      - name: Install required macOS packages
         if: runner.os == 'macOS'
         run: brew install coreutils gcc@11
 
-      - name: Setup msys and install required packages
+      - name: Set up MSYS2 and install required packages
         if: runner.os == 'Windows'
         uses: msys2/setup-msys2@v2
         with:
           msystem: ${{ matrix.config.msys_sys }}
           install: mingw-w64-${{ matrix.config.msys_env }} make git expect
 
-      - name: Prepare Rukh build environment
+      - name: Set up build environment
         uses: ./.github/actions/build-setup
         with:
           compiler: ${{ matrix.config.compiler }}
@@ -95,7 +95,7 @@ jobs:
           done
           [[ -n "$benchref" ]] && echo "benchref=$benchref" >> $GITHUB_ENV && echo "From commit: $hash" && echo "Reference bench: $benchref" || echo "No bench found"
 
-      - name: Test debug x86-64-avx2 build
+      - name: Build debug x86-64-avx2
         if: matrix.config.run_64bit_tests
         uses: ./.github/actions/build
         with:
@@ -108,7 +108,7 @@ jobs:
         run: |
           ../tests/signature.sh $benchref
 
-      - name: Test x86-64-bmi2 build
+      - name: Build x86-64-bmi2
         if: matrix.config.run_64bit_tests
         uses: ./.github/actions/build
         with:
@@ -121,7 +121,7 @@ jobs:
         run: |
           ../tests/signature.sh $benchref
 
-      - name: Test x86-64-avx2 build
+      - name: Build x86-64-avx2
         if: matrix.config.run_64bit_tests
         uses: ./.github/actions/build
         with:
@@ -134,7 +134,7 @@ jobs:
         run: |
           ../tests/signature.sh $benchref
 
-      - name: Test x86-64-modern build
+      - name: Build x86-64-modern
         if: matrix.config.run_64bit_tests
         uses: ./.github/actions/build
         with:
@@ -147,7 +147,7 @@ jobs:
         run: |
           ../tests/signature.sh $benchref
 
-      - name: Test x86-64-sse41-popcnt build
+      - name: Build x86-64-sse41-popcnt
         if: matrix.config.run_64bit_tests
         uses: ./.github/actions/build
         with:
@@ -160,7 +160,7 @@ jobs:
         run: |
           ../tests/signature.sh $benchref
 
-      - name: Test x86-64-ssse3 build
+      - name: Build x86-64-ssse3
         if: matrix.config.run_64bit_tests
         uses: ./.github/actions/build
         with:
@@ -173,7 +173,7 @@ jobs:
         run: |
           ../tests/signature.sh $benchref
 
-      - name: Test x86-64-sse3-popcnt build
+      - name: Build x86-64-sse3-popcnt
         if: matrix.config.run_64bit_tests
         uses: ./.github/actions/build
         with:
@@ -186,7 +186,7 @@ jobs:
         run: |
           ../tests/signature.sh $benchref
 
-      - name: Test x86-64 build
+      - name: Build x86-64
         if: matrix.config.run_64bit_tests
         uses: ./.github/actions/build
         with:
@@ -199,7 +199,7 @@ jobs:
         run: |
           ../tests/signature.sh $benchref
 
-      - name: Test general-64 build
+      - name: Build general-64
         if: matrix.config.run_64bit_tests
         uses: ./.github/actions/build
         with:
@@ -212,7 +212,7 @@ jobs:
         run: |
           ../tests/signature.sh $benchref
 
-      - name: Test apple-silicon build
+      - name: Build apple-silicon
         if: matrix.config.run_m1_tests
         uses: ./.github/actions/build
         with:
@@ -226,7 +226,7 @@ jobs:
           ../tests/signature.sh $benchref
 
 
-      - name: Check perft and search reproducibility
+      - name: Build x86-64-avx2 for perft and search checks
         if: matrix.config.run_64bit_tests
         uses: ./.github/actions/build
         with:

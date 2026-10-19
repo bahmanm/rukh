@@ -1,16 +1,16 @@
-name: Build setup
-description: Prepare a Rukh build job and run basic toolchain checks
+name: Set up build environment
+description: Prepare a build job and check basic toolchain commands.
 inputs:
   compiler:
-    description: C++ compiler command
+    description: C++ compiler command.
     required: true
   shell:
-    description: Shell used by the calling matrix job
+    description: Shell used by the calling matrix job.
     required: true
 runs:
   using: composite
   steps:
-    - name: Download network
+    - name: Download neural network
       run: make net
       shell: ${{ inputs.shell }}
       working-directory: src
@@ -22,12 +22,12 @@ runs:
       env:
         COMPCXX: ${{ inputs.compiler }}
 
-    - name: Check help target
+    - name: Check Make help target
       run: make help
       shell: ${{ inputs.shell }}
       working-directory: src
 
-    - name: Check git
+    - name: Check Git version
       run: git --version
       shell: ${{ inputs.shell }}
       working-directory: src

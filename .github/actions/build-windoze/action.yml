@@ -1,20 +1,20 @@
 name: Build on Windoze
-description: Build a target on Windoze
+description: Build a target on Windoze.
 inputs:
   target:
-    description: Make target to run
+    description: Make target to run.
     required: true
   make_args:
-    description: Additional arguments to pass to make
+    description: Additional arguments to pass to make.
     default: ""
   run_prefix:
-    description: Command prefix for running the engine during profile builds
+    description: Command prefix for running the engine during profile builds.
     default: ""
   cxxflags:
-    description: C++ compiler flags
+    description: C++ compiler flags.
     default: ""
   ldflags:
-    description: Linker flags
+    description: Linker flags.
     default: ""
 runs:
   using: composite

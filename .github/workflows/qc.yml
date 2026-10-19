@@ -1,4 +1,4 @@
-name: QC
+name: qc
 on:
   push:
     tags:
@@ -12,8 +12,8 @@ on:
       - master
       - tools
 jobs:
-  Test-under-sanitizers:
-    name: ${{ matrix.sanitizers.name }}
+  qc__sanitisers:
+    name: qc__${{ matrix.sanitisers.label }}
     runs-on: ${{ matrix.config.os }}
     env:
       COMPCXX: ${{ matrix.config.compiler }}
@@ -28,28 +28,34 @@ jobs:
             compiler: g++
             comp: gcc
             shell: bash
-        sanitizers:
-          - name: Run with thread sanitizer
+        sanitisers:
+          - label: thread-sanitizer
+            name: Run with thread sanitizer
             make_option: sanitize=thread
             cxx_extra_flags: ""
             instrumented_option: sanitizer-thread
-          - name: Run with UB sanitizer
+          - label: undefined-sanitizer
+            name: Run with UB sanitizer
             make_option: sanitize=undefined
             cxx_extra_flags: ""
             instrumented_option: sanitizer-undefined
-          - name: Run under valgrind
+          - label: valgrind
+            name: Run under Valgrind
             make_option: ""
             cxx_extra_flags: ""
             instrumented_option: valgrind
-          - name: Run under valgrind-thread
+          - label: valgrind-thread
+            name: Run under Valgrind with threads
             make_option: ""
             cxx_extra_flags: ""
             instrumented_option: valgrind-thread
-          - name: Run non-instrumented
+          - label: non-instrumented
+            name: Run without instrumentation
             make_option: ""
             cxx_extra_flags: ""
             instrumented_option: none
-          - name: Run with glibcxx assertions
+          - label: glibcxx-assertions
+            name: Run with GLIBCXX assertions
             make_option: ""
             cxx_extra_flags: -D_GLIBCXX_ASSERTIONS
             instrumented_option: non
@@ -62,28 +68,28 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Download required linux packages
+      - name: Install required Linux packages
         run: |
           sudo apt update
           sudo apt install expect valgrind
 
-      - name: Prepare Rukh build environment
+      - name: Set up build environment
         uses: ./.github/actions/build-setup
         with:
           compiler: ${{ matrix.config.compiler }}
           shell: ${{ matrix.config.shell }}
 
-      - name: Lower ALSR entropy
+      - name: Reduce ASLR entropy
         run: sudo sysctl -w vm.mmap_rnd_bits=28
 
-      - name: ${{ matrix.sanitizers.name }}
+      - name: Build engine
         uses: ./.github/actions/build
         with:
           target: build
-          make_args: ARCH=x86-64-sse41-popcnt ${{ matrix.sanitizers.make_option }} debug=yes optimize=no
-          cxxflags: -O1 -f-no-inline ${{ matrix.sanitizers.cxx_extra_flags }}
+          make_args: ARCH=x86-64-sse41-popcnt ${{ matrix.sanitisers.make_option }} debug=yes optimize=no
+          cxxflags: -O1 -f-no-inline ${{ matrix.sanitisers.cxx_extra_flags }}
 
-      - name: Run instrumented checks
+      - name: ${{ matrix.sanitisers.name }}
         working-directory: src
         shell: ${{ matrix.config.shell }}
-        run: python3 ../tests/instrumented.py --${{ matrix.sanitizers.instrumented_option }} ./shashchess
+        run: python3 ../tests/instrumented.py --${{ matrix.sanitisers.instrumented_option }} ./shashchess

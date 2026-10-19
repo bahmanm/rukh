@@ -1,4 +1,4 @@
-name: Release
+name: release
 on:
   push:
     tags:
@@ -6,18 +6,20 @@ on:
 permissions:
   contents: write
 jobs:
-  Build:
+  release-build:
+    name: release/build
     uses: ./.github/workflows/release-build.yml
-  Package:
-    needs: [Build]
+  release-package:
+    name: release/package
+    needs: [release-build]
     runs-on: ubuntu-latest
     steps:
-      - name: Download build artifact
+      - name: Download build artefacts
         uses: actions/download-artifact@v4
         with:
           pattern: '*'
           path: build-artifacts
-      - name: Create package
+      - name: Create release packages
         run: |
           mkdir -p release-assets
           for artifact_dir in build-artifacts/*; do
@@ -48,8 +50,9 @@ jobs:
           name: rukh-release-packages
           path: release-assets/*
           if-no-files-found: error
-  Publish:
-    needs: [Package]
+  release-publish-github:
+    name: release/publish-github
+    needs: [release-package]
     runs-on: ubuntu-latest
     steps:
       - name: Download release packages

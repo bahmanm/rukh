@@ -1,4 +1,4 @@
-name: Smoke
+name: smoke
 on:
   push:
     branches:
@@ -10,8 +10,8 @@ on:
       - master
       - tools
 jobs:
-  Games:
-    name: Games
+  smoke__games:
+    name: smoke__games
     runs-on: ubuntu-22.04
     env:
       ENGINE: ${{ github.workspace }}/src/shashchess
@@ -20,7 +20,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Prepare build environment
+      - name: Set up build environment
         uses: ./.github/actions/build-setup
         with:
           compiler: g++
@@ -32,7 +32,7 @@ jobs:
           target: build
           make_args: debug=yes
 
-      - name: Checkout fastchess
+      - name: Check out fastchess
         uses: actions/checkout@v4
         with:
           repository: Disservin/fastchess
@@ -55,8 +55,8 @@ jobs:
           ! grep "Assertion" fast.log > /dev/null
           ! grep "disconnect" fast.out > /dev/null
 
-  Matetrack:
-    name: Matetrack
+  smoke__matetrack:
+    name: smoke__matetrack
     runs-on: ubuntu-22.04
     env:
       ENGINE: ${{ github.workspace }}/src/shashchess
@@ -65,7 +65,7 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Prepare build environment
+      - name: Set up build environment
         uses: ./.github/actions/build-setup
         with:
           compiler: g++
@@ -76,7 +76,7 @@ jobs:
         with:
           target: profile-build
 
-      - name: Checkout matetrack
+      - name: Check out Matetrack
         uses: actions/checkout@v4
         with:
           repository: vondele/matetrack
@@ -84,11 +84,11 @@ jobs:
           ref: 4f8a80860ed8f3607f05a9195df8b40203bdc360
           persist-credentials: false
 
-      - name: Install matetrack dependencies
+      - name: Install Matetrack dependencies
         working-directory: matetrack
         run: pip install -r requirements.txt
 
-      - name: Cache Syzygy tables
+      - name: Cache Syzygy tablebases
         id: cache-syzygy
         uses: actions/cache@v4
         with:
@@ -97,20 +97,20 @@ jobs:
             matetrack/3-4-5-dtz/
           key: key-syzygy
 
-      - name: Download Syzygy tables
+      - name: Download Syzygy tablebases
         working-directory: matetrack
         if: steps.cache-syzygy.outputs.cache-hit != 'true'
         run: |
           wget --no-verbose -r -nH --cut-dirs=2 --no-parent --reject="index.html*" -e robots=off https://tablebase.lichess.ovh/tables/standard/3-4-5-wdl/
           wget --no-verbose -r -nH --cut-dirs=2 --no-parent --reject="index.html*" -e robots=off https://tablebase.lichess.ovh/tables/standard/3-4-5-dtz/
 
-      - name: Run matetrack single-threaded
+      - name: Run Matetrack single-threaded
         working-directory: matetrack
         run: |
           python matecheck.py --syzygyPath 3-4-5-wdl/:3-4-5-dtz/ --engine "$ENGINE" --epdFile mates2000.epd --nodes 100000 | tee matecheckout1.out
           ! grep "issues were detected" matecheckout1.out > /dev/null
 
-      - name: Run matetrack multithreaded
+      - name: Run Matetrack multi-threaded
         working-directory: matetrack
         run: |
           python matecheck.py --syzygyPath 3-4-5-wdl/:3-4-5-dtz/ --engine "$ENGINE" --epdFile mates2000.epd --nodes 100000 --threads 4 | tee matecheckout4.out
@@ -123,7 +123,7 @@ jobs:
           python matecheck.py --syzygyPath 3-4-5-wdl/:3-4-5-dtz/ --engine "$ENGINE" --epdFile cursed5.epd --nodes 100000 --syzygy50MoveRule false | tee matecheckcursed1.out
           ! grep "issues were detected" matecheckcursed1.out > /dev/null
 
-      - name: Run cursed positions multithreaded
+      - name: Run cursed positions multi-threaded
         working-directory: matetrack
         run: |
           grep 5men cursed.epd > cursed5.epd

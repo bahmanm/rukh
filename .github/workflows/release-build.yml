@@ -1,8 +1,9 @@
-name: Release build
+name: release/build
 on:
   workflow_call:
 jobs:
-  Matrix:
+  release-build__matrix:
+    name: release-build__matrix
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
@@ -11,10 +12,11 @@ jobs:
         with:
           persist-credentials: false
       - id: set-matrix
+        name: Set up build matrix
         run: echo "matrix=$(jq -c . .github/workflows/release-build-matrix.json)" >> "$GITHUB_OUTPUT"
-  Build:
-    needs: [Matrix]
-    name: ${{ matrix.config.name }} ${{ matrix.binaries }}
+  release-build__build:
+    needs: [release-build__matrix]
+    name: release-build__${{ matrix.config.simple_name }}-${{ matrix.binaries }}
     runs-on: ${{ matrix.config.os }}
     env:
       COMPCXX: ${{ matrix.config.compiler }}
@@ -35,13 +37,13 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Install fixed GCC on Linux
+      - name: Set up GCC on Linux
         if: runner.os == 'Linux'
         uses: egor-tensin/setup-gcc@eaa888eb19115a521fa72b65cd94fe1f25bbcaac
         with:
           version: 11
 
-      - name: Setup msys and install required packages
+      - name: Set up MSYS2 and install required packages
         if: runner.os == 'Windows'
         uses: msys2/setup-msys2@v2
         with:
@@ -55,13 +57,13 @@ jobs:
           environmentVariableName: SDE_DIR
           sdeVersion: 9.33.0
 
-      - name: Prepare build environment
+      - name: Set up build environment
         uses: ./.github/actions/build-setup
         with:
           compiler: ${{ matrix.config.compiler }}
           shell: ${{ matrix.config.shell }}
 
-      - name: Show compiler cpu info
+      - name: Show compiler CPU information
         run: |
           if [[ "$COMPCXX" == clang* ]]; then
              $COMPCXX -E - -march=native -###
@@ -82,13 +84,13 @@ jobs:
       - name: Check binary signature
         run: RUN_PREFIX="$SDE" ../tests/signature.sh $benchref
 
-      - name: Rename binary
+      - name: Name binary
         run: mv ./shashchess$EXT ../rukh-$NAME-$BINARY$EXT
 
-      - name: Remove non src files
+      - name: Remove files outside source package
         run: git clean -fx
 
-      - name: Upload build artifact
+      - name: Upload build artefact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.config.simple_name }} ${{ matrix.binaries }}
