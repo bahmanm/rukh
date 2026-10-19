@@ -91,5 +91,4 @@ jobs:
 
       - name: ${{ matrix.sanitisers.name }}
         working-directory: src
-        shell: ${{ matrix.config.shell }}
         run: python3 ../tests/instrumented.py --${{ matrix.sanitisers.instrumented_option }} ./shashchess
