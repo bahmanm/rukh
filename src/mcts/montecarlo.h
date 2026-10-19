@@ -251,9 +251,6 @@ class MonteCarlo {
     TimePoint startTime{};
     TimePoint lastOutputTime{};
 
-    [[maybe_unused]] double max_epsilon = 0.99;
-    [[maybe_unused]] double min_epsilon = 0.00;
-    [[maybe_unused]] double decay_rate  = 0.8;
     bool                    AB_Rollout{};
 
     // Flags and limits to tweak the algorithm
