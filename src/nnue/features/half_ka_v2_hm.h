@@ -74,7 +74,6 @@ class HalfKAv2_hm {
       static_cast<IndexType>(SQUARE_NB) * static_cast<IndexType>(PS_NB) / 2;
 
 #define B(v) (v * PS_NB)
-    // clang-format off
     static constexpr IndexType KingBuckets[SQUARE_NB] = {
         B(28), B(29), B(30), B(31), B(31), B(30), B(29), B(28),
         B(24), B(25), B(26), B(27), B(27), B(26), B(25), B(24),
@@ -85,9 +84,7 @@ class HalfKAv2_hm {
         B( 4), B( 5), B( 6), B( 7), B( 7), B( 6), B( 5), B( 4),
         B( 0), B( 1), B( 2), B( 3), B( 3), B( 2), B( 1), B( 0),
     };
-    // clang-format on
 #undef B
-    // clang-format off
     // Orient a square according to perspective (rotates by 180 for black)
     static constexpr IndexType OrientTBL[SQUARE_NB] = {
         SQ_H1, SQ_H1, SQ_H1, SQ_H1, SQ_A1, SQ_A1, SQ_A1, SQ_A1,
@@ -99,7 +96,6 @@ class HalfKAv2_hm {
         SQ_H1, SQ_H1, SQ_H1, SQ_H1, SQ_A1, SQ_A1, SQ_A1, SQ_A1,
         SQ_H1, SQ_H1, SQ_H1, SQ_H1, SQ_A1, SQ_A1, SQ_A1, SQ_A1 ,
     };
-    // clang-format on
 
     // Maximum number of simultaneously active features.
     static constexpr IndexType MaxActiveDimensions = 32;

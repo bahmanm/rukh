@@ -495,7 +495,6 @@ void UCIEngine::benchmark(std::istream& args) {
     if (threadBinding.empty())
         threadBinding = "none";
 
-    // clang-format off
 
     std::cerr << "==========================="
               << "\nVersion                    : "
@@ -519,7 +518,6 @@ void UCIEngine::benchmark(std::istream& args) {
               << "\nTotal search time [s]      : " << totalTime / 1000.0
               << "\nNodes/second               : " << 1000 * nodes / totalTime << std::endl;
 
-    // clang-format on
 
     init_search_update_listeners();
 }
