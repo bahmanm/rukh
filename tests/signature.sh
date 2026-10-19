@@ -18,7 +18,11 @@ error()
 trap 'error ${LINENO}' ERR
 
 # obtain
-eval "$RUN_PREFIX ./stockfish bench" > "$STDOUT_FILE" 2> "$STDERR_FILE" || error ${LINENO}
+engine=./shashchess
+if [[ ! -f "$engine" && -f "$engine.exe" ]]; then
+  engine="$engine.exe"
+fi
+eval "$RUN_PREFIX $engine bench" > "$STDOUT_FILE" 2> "$STDERR_FILE" || error ${LINENO}
 signature=$(grep "Nodes searched  : " "$STDERR_FILE" | awk '{print $4}')
 
 rm -f "$STDOUT_FILE" "$STDERR_FILE"
