@@ -2,12 +2,12 @@ name: smoke
 on:
   push:
     branches:
-      - master
+      - main
       - tools
       - github_ci
   pull_request:
     branches:
-      - master
+      - main
       - tools
 jobs:
   smoke__games:

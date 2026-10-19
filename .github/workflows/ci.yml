@@ -2,12 +2,12 @@ name: ci
 on:
   push:
     branches:
-      - master
+      - main
       - tools
       - github_ci
   pull_request:
     branches:
-      - master
+      - main
       - tools
 jobs:
   ci__tests:

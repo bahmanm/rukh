@@ -4,12 +4,12 @@ on:
     tags:
       - "*"
     branches:
-      - master
+      - main
       - tools
       - github_ci
   pull_request:
     branches:
-      - master
+      - main
       - tools
 jobs:
   qc__sanitisers:
