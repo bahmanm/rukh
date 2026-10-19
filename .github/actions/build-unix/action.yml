@@ -33,12 +33,6 @@ runs:
         make_args=()
         read -r -a make_args <<< "$MAKE_ARGS"
         make_command=(make -j4 "${make_args[@]}" "$MAKE_TARGET")
-        if [[ -n "$CXXFLAGS" ]]; then
-          make_command+=("CXXFLAGS=$CXXFLAGS")
-        fi
-        if [[ -n "$LDFLAGS" ]]; then
-          make_command+=("LDFLAGS=$LDFLAGS")
-        fi
         if [[ -n "$RUN_PREFIX" ]]; then
           make_command+=("RUN_PREFIX=$RUN_PREFIX")
         fi
