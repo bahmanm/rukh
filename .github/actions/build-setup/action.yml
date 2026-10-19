@@ -10,6 +10,13 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: Install libcurl development files
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt update
+        sudo apt install libcurl4-openssl-dev
+      shell: bash
+
     - name: Download neural network
       run: make net
       shell: ${{ inputs.shell }}
