@@ -44,7 +44,6 @@ class FullThreats {
     // Number of feature dimensions
     static constexpr IndexType Dimensions = 79856;
 
-    // clang-format off
     // Orient a square according to perspective (rotates by 180 for black)
     static constexpr std::int8_t OrientTBL[SQUARE_NB] = {
         SQ_A1, SQ_A1, SQ_A1, SQ_A1, SQ_H1, SQ_H1, SQ_H1, SQ_H1,
@@ -65,7 +64,6 @@ class FullThreats {
       {0,  1,  2,  3,  4,  5},
       {0,  1,  2,  3, -1, -1}
     };
-    // clang-format on
 
     struct FusedUpdateData {
         Bitboard dp2removedOriginBoard = 0;

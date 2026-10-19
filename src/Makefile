@@ -192,12 +192,6 @@ lsx = no
 lasx = no
 STRIP = strip
 
-ifneq ($(shell which clang-format-20 2> /dev/null),)
-	CLANG-FORMAT = clang-format-20
-else
-	CLANG-FORMAT = clang-format
-endif
-
 ### 2.2 Architecture specific
 
 ifeq ($(findstring x86,$(ARCH)),x86)
@@ -1013,7 +1007,7 @@ endif
 	icx-profile-use icx-profile-make \
 	gcc-profile-use gcc-profile-make \
 	clang-profile-use clang-profile-make FORCE \
-	format analyze
+	analyze
 
 analyze: net config-sanity objclean
 	$(MAKE) -k ARCH=$(ARCH) COMP=$(COMP) $(OBJS)
@@ -1066,9 +1060,6 @@ profileclean:
 # evaluation network (nnue)
 net:
 	@$(SHELL) ../scripts/net.sh
-
-format:
-	$(CLANG-FORMAT) -i $(SRCS) $(HEADERS) -style=file
 
 ### ==========================================================================
 ### Section 5. Private Targets
@@ -1195,6 +1186,6 @@ icx-profile-use:
 .depend: $(SRCS)
 	-@$(CXX) $(DEPENDFLAGS) -MM $(SRCS) > $@ 2> /dev/null
 
-ifeq (, $(filter $(MAKECMDGOALS), help strip install clean net objclean profileclean format config-sanity))
+ifeq (, $(filter $(MAKECMDGOALS), help strip install clean net objclean profileclean config-sanity))
 -include .depend
 endif

@@ -26,7 +26,6 @@
 
 namespace {
 
-// clang-format off
 const std::vector<std::string> Defaults = {
   "setoption name UCI_Chess960 value false",
   "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
@@ -94,9 +93,7 @@ const std::vector<std::string> Defaults = {
   "nqbnrkrb/pppppppp/8/8/8/8/PPPPPPPP/NQBNRKRB w KQkq - 0 1",
   "setoption name UCI_Chess960 value false"
 };
-// clang-format on
 
-// clang-format off
 // human-randomly picked 5 games with <60 moves from
 // https://tests.stockfishchess.org/tests/view/665c71f9fd45fb0f907c21e0
 // only moves for one side
@@ -370,7 +367,6 @@ const std::vector<std::vector<std::string>> BenchmarkPositions = {
         "8/8/5pk1/7p/3K3P/8/R4N1r/4b3 b - - 2 64",
     }
 };
-// clang-format on
 
 }  // namespace
 

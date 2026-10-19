@@ -55,22 +55,6 @@ _ShashChess's development is not focused on adding new features. Thus any pull
 request introducing new features will potentially be closed without further
 discussion._
 
-## Code Style
-
-Changes to ShashChess C++ code should respect our coding style defined by
-[.clang-format](.clang-format). You can format your changes by running
-`make format`. This requires clang-format version 20 to be installed on your system.
-
-## Navigate
-
-For experienced Git users who frequently use git blame, it is recommended to
-configure the blame.ignoreRevsFile setting.
-This setting is useful for excluding noisy formatting commits.
-
-```bash
-git config blame.ignoreRevsFile .git-blame-ignore-revs
-```
-
 ## Community and Communication
 
 - Join the [ShashChess discord][discord-link] to discuss ideas, issues, and

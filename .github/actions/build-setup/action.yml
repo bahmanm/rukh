@@ -1,0 +1,33 @@
+name: Set up build environment
+description: Prepare a build job and check basic toolchain commands.
+inputs:
+  compiler:
+    description: C++ compiler command.
+    required: true
+  shell:
+    description: Shell used by the calling matrix job.
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Download neural network
+      run: make net
+      shell: ${{ inputs.shell }}
+      working-directory: src
+
+    - name: Check compiler
+      run: $COMPCXX -v
+      shell: ${{ inputs.shell }}
+      working-directory: src
+      env:
+        COMPCXX: ${{ inputs.compiler }}
+
+    - name: Check Make help target
+      run: make help
+      shell: ${{ inputs.shell }}
+      working-directory: src
+
+    - name: Check Git version
+      run: git --version
+      shell: ${{ inputs.shell }}
+      working-directory: src

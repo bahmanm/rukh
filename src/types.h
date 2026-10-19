@@ -236,7 +236,6 @@ constexpr Value RookValue   = 1276;
 constexpr Value QueenValue  = 2538;
 
 
-// clang-format off
 enum PieceType : std::uint8_t {
     NO_PIECE_TYPE, PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING,
     ALL_PIECES = 0,
@@ -249,7 +248,6 @@ enum Piece : std::uint8_t {
     B_PAWN = PAWN + 8, B_KNIGHT, B_BISHOP, B_ROOK, B_QUEEN, B_KING,
     PIECE_NB = 16
 };
-// clang-format on
 
 constexpr Value PieceValue[PIECE_NB] = {
   VALUE_ZERO, PawnValue, KnightValue, BishopValue, RookValue, QueenValue, VALUE_ZERO, VALUE_ZERO,
@@ -273,7 +271,6 @@ constexpr Depth DEPTH_QS = 0;
 constexpr Depth DEPTH_UNSEARCHED   = -2;
 constexpr Depth DEPTH_ENTRY_OFFSET = -3;
 
-// clang-format off
 enum Square : uint8_t {
     SQ_A1, SQ_B1, SQ_C1, SQ_D1, SQ_E1, SQ_F1, SQ_G1, SQ_H1,
     SQ_A2, SQ_B2, SQ_C2, SQ_D2, SQ_E2, SQ_F2, SQ_G2, SQ_H2,
@@ -288,7 +285,6 @@ enum Square : uint8_t {
     SQUARE_ZERO = 0,
     SQUARE_NB   = 64
 };
-// clang-format on
 
 enum Direction : int8_t {
     NORTH = 8,
