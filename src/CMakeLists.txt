@@ -6,7 +6,7 @@ if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")
 endif()
 
 project(rukh LANGUAGES CXX)
-include("${CMAKE_CURRENT_SOURCE_DIR}/etc/cmake/platform-check.cmake")
+include("${CMAKE_CURRENT_SOURCE_DIR}/../etc/cmake/platform-check.cmake")
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -15,7 +15,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 find_package(Threads REQUIRED)
 find_package(CURL REQUIRED)
 
-set(RUKH_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
+set(RUKH_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 
 set(RUKH_SOURCES
     benchmark.cpp
@@ -69,8 +69,6 @@ set(RUKH_SOURCES
     wdl/win_probability.cpp
 )
 
-list(TRANSFORM RUKH_SOURCES PREPEND "${RUKH_SOURCE_DIR}/")
-
 add_executable(rukh ${RUKH_SOURCES})
 target_include_directories(rukh PRIVATE "${RUKH_SOURCE_DIR}")
 target_compile_definitions(rukh PRIVATE USE_LIVEBOOK IS_64BIT)
@@ -79,7 +77,7 @@ target_compile_options(rukh PRIVATE
     $<$<CONFIG:Release>:-O3;-funroll-loops>
 )
 target_link_libraries(rukh PRIVATE CURL::libcurl Threads::Threads)
-include("${CMAKE_CURRENT_SOURCE_DIR}/etc/cmake/download-network.cmake")
+include("${CMAKE_CURRENT_SOURCE_DIR}/../etc/cmake/download-network.cmake")
 
 if(WIN32)
     target_link_libraries(rukh PRIVATE bcrypt advapi32 crypt32 gdi32 ws2_32)

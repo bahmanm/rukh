@@ -8,19 +8,28 @@ RUN apt-get update \
         ca-certificates \
         clang-20 \
         cmake \
+        curl \
         libcurl4-openssl-dev \
     && rm -rf /var/lib/apt/lists/*
 
+RUN curl -fsSL https://mirrors.kernel.org/gnu/make/make-4.4.1.tar.gz \
+    | tar -xz -C /tmp \
+    && cd /tmp/make-4.4.1 \
+    && ./configure --prefix=/usr/local \
+    && make -j"$(nproc)" \
+    && make install \
+    && rm -rf /tmp/make-4.4.1
+
 WORKDIR /rukh
 
-COPY CMakeLists.txt ./
+COPY Makefile ./
+COPY etc/make/ ./etc/make/
 COPY etc/cmake/ ./etc/cmake/
 COPY src/ ./src/
 
-RUN cmake -S . -B /_build/linux-amd64-release \
-        -DCMAKE_CXX_COMPILER=clang++-20 \
-        -DCMAKE_BUILD_TYPE=Release \
-    && cmake --build /_build/linux-amd64-release --parallel 4
+RUN make rukh.build \
+    RUKH_PROFILE=release \
+    RUKH_CMAKE_CONFIGURE_ARGS=-DCMAKE_CXX_COMPILER=clang++-20
 
 FROM ubuntu:24.04 AS runtime
 
@@ -30,6 +39,6 @@ RUN apt-get update \
 
 WORKDIR /opt/rukh
 
-COPY --from=build /_build/linux-amd64-release/rukh ./rukh
+COPY --from=build /rukh/_build/engine/release/rukh ./rukh
 
 ENTRYPOINT ["./rukh"]
