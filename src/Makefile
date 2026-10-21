@@ -18,6 +18,13 @@ rukh.engine.build : rukh.engine.configure ## Build the engine
 		$(RUKH_CMAKE_BUILD_ARGS)
 .PHONY : rukh.engine.build
 
+rukh.engine.test : rukh.engine.build ## Run engine smoke tests
+	$(RUKH_CTEST) \
+		--test-dir "$(RUKH_ENGINE_BUILD_DIR)" \
+		-C $(RUKH_CMAKE_BUILD_TYPE) \
+		--output-on-failure
+.PHONY : rukh.engine.test
+
 rukh.engine.install : rukh.engine.build ## Install the engine under _build/install
 	$(RUKH_CMAKE) \
 		--install "$(RUKH_ENGINE_BUILD_DIR)" \

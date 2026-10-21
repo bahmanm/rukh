@@ -7,6 +7,7 @@ endif()
 
 project(rukh LANGUAGES CXX)
 include("${CMAKE_CURRENT_SOURCE_DIR}/../etc/cmake/platform-check.cmake")
+include(CTest)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -84,3 +85,14 @@ if(WIN32)
 endif()
 
 install(TARGETS rukh RUNTIME DESTINATION bin)
+
+if(BUILD_TESTING)
+    find_program(UV_EXECUTABLE uv REQUIRED)
+    add_test(
+        NAME rukh-smoke-mate-puzzles
+        COMMAND "${UV_EXECUTABLE}" run --locked --script
+            "${CMAKE_CURRENT_SOURCE_DIR}/../tests/smoke/mate_puzzles.py"
+            "$<TARGET_FILE:rukh>"
+    )
+    set_tests_properties(rukh-smoke-mate-puzzles PROPERTIES TIMEOUT 300)
+endif()

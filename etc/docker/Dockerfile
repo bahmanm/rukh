@@ -1,5 +1,7 @@
 FROM ubuntu:24.04 AS build
 
+COPY --from=ghcr.io/astral-sh/uv:0.13.4 /uv /uvx /bin/
+
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update \
@@ -10,6 +12,7 @@ RUN apt-get update \
         cmake \
         curl \
         libcurl4-openssl-dev \
+        python3 \
     && rm -rf /var/lib/apt/lists/*
 
 RUN curl -fsSL https://mirrors.kernel.org/gnu/make/make-4.4.1.tar.gz \
@@ -26,8 +29,9 @@ COPY Makefile ./
 COPY etc/make/ ./etc/make/
 COPY etc/cmake/ ./etc/cmake/
 COPY src/ ./src/
+COPY tests/ ./tests/
 
-RUN make rukh.build \
+RUN make rukh.test \
     RUKH_PROFILE=release \
     RUKH_CMAKE_CONFIGURE_ARGS=-DCMAKE_CXX_COMPILER=clang++-20
 
