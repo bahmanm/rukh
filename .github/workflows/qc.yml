@@ -1,16 +1,13 @@
+---
 name: qc
+
 on:
   push:
-    tags:
-      - "*"
-    branches:
-      - main
-      - tools
-      - github_ci
+    branches: [ "main" ]
+    tags: [ "v*" ]
   pull_request:
-    branches:
-      - main
-      - tools
+    branches: [ "main" ]
+
 jobs:
   qc__sanitisers:
     name: qc__${{ matrix.sanitisers.label }}

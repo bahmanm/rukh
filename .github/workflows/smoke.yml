@@ -1,20 +1,23 @@
+---
 name: smoke
+
 on:
   push:
-    branches:
-      - main
-      - tools
-      - github_ci
+    branches: [ "main" ]
   pull_request:
-    branches:
-      - main
-      - tools
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
 jobs:
   smoke__games:
     name: smoke__games
     runs-on: ubuntu-22.04
+
     env:
       ENGINE: ${{ github.workspace }}/engine/shashchess
+
     steps:
       - uses: actions/checkout@v4
         with:
@@ -58,8 +61,10 @@ jobs:
   smoke__matetrack:
     name: smoke__matetrack
     runs-on: ubuntu-22.04
+
     env:
       ENGINE: ${{ github.workspace }}/engine/shashchess
+
     steps:
       - uses: actions/checkout@v4
         with:

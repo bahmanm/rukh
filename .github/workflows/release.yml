@@ -1,24 +1,30 @@
+---
 name: release
+
 on:
   push:
-    tags:
-      - "v*"
+    tags: [ "v*" ]
+
 permissions:
   contents: write
+
 jobs:
   release-build:
     name: release/build
     uses: ./.github/workflows/release-build.yml
+
   release-package:
     name: release/package
     needs: [release-build]
     runs-on: ubuntu-latest
+
     steps:
       - name: Download build artefacts
         uses: actions/download-artifact@v4
         with:
           pattern: '*'
           path: build-artifacts
+
       - name: Create release packages
         run: |
           mkdir -p release-assets
@@ -44,16 +50,19 @@ jobs:
             fi
             rm -rf "$package_dir"
           done
+
       - name: Upload release packages
         uses: actions/upload-artifact@v4
         with:
           name: rukh-release-packages
           path: release-assets/*
           if-no-files-found: error
+
   release-publish-github:
     name: release/publish-github
     needs: [release-package]
     runs-on: ubuntu-latest
+
     steps:
       - name: Download release packages
         uses: actions/download-artifact@v4
@@ -61,6 +70,7 @@ jobs:
           name: rukh-release-packages
           path: release-assets
           merge-multiple: true
+
       - name: Publish GitHub release
         uses: softprops/action-gh-release@4634c16e79c963813287e889244c50009e7f0981
         with:

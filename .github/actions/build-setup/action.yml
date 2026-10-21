@@ -1,5 +1,6 @@
+---
 name: Set up build environment
-description: Prepare a build job and check basic toolchain commands.
+description: Install build dependencies and check toolchain commands.
 inputs:
   compiler:
     description: C++ compiler command.
@@ -7,27 +8,48 @@ inputs:
   shell:
     description: Shell used by the calling matrix job.
     required: true
+  ci_toolchain:
+    description: Install the supported Linux or macOS CI toolchain.
+    default: 'false'
 runs:
   using: composite
   steps:
-    - name: Download neural network
-      run: make net
+    - name: Install Linux dependencies
+      if: inputs.ci_toolchain == 'true' && runner.os == 'Linux'
+      shell: bash
+      run: |
+        sudo apt-get update
+        sudo apt-get install --yes clang-20 expect libcurl4-openssl-dev
+
+    - name: Install macOS build tools
+      if: inputs.ci_toolchain == 'true' && runner.os == 'macOS'
       shell: ${{ inputs.shell }}
-      working-directory: engine
+      run: |
+        brew install expect llvm@20 make
+        echo "$(brew --prefix make)/libexec/gnubin" >> "$GITHUB_PATH"
+        echo "$(brew --prefix llvm@20)/bin" >> "$GITHUB_PATH"
+
+    - name: Set up uv
+      if: inputs.ci_toolchain == 'true'
+      uses: astral-sh/setup-uv@v6
+
+    - name: Check CI build tools
+      if: inputs.ci_toolchain == 'true'
+      shell: ${{ inputs.shell }}
+      env:
+        RUKH_CXX: ${{ inputs.compiler }}
+      run: |
+        cmake --version
+        make --version
+        uv --version
+        "$RUKH_CXX" --version
+        git --version
 
     - name: Check compiler
-      run: $COMPCXX -v
+      if: inputs.ci_toolchain != 'true'
       shell: ${{ inputs.shell }}
-      working-directory: engine
       env:
-        COMPCXX: ${{ inputs.compiler }}
-
-    - name: Check Make help target
-      run: make help
-      shell: ${{ inputs.shell }}
-      working-directory: engine
-
-    - name: Check Git version
-      run: git --version
-      shell: ${{ inputs.shell }}
-      working-directory: engine
+        RUKH_CXX: ${{ inputs.compiler }}
+      run: |
+        "$RUKH_CXX" --version
+        git --version

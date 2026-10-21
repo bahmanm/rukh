@@ -1,241 +1,73 @@
+---
 name: ci
+
 on:
   push:
-    branches:
-      - main
-      - tools
-      - github_ci
+    branches: [ "main" ]
   pull_request:
-    branches:
-      - main
-      - tools
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
 jobs:
-  ci__tests:
-    name: ci__${{ matrix.config.check_label }}
-    runs-on: ${{ matrix.config.os }}
-    env:
-      COMPCXX: ${{ matrix.config.compiler }}
-      COMP: ${{ matrix.config.comp }}
-      CXXFLAGS: "-Werror"
+  ci__test:
+    name: ci__${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        config:
-          - check_label: linux-gcc
-            os: ubuntu-22.04
-            compiler: g++
-            comp: gcc
-            run_64bit_tests: true
-            shell: bash
-          - check_label: linux-clang
-            os: ubuntu-22.04
-            compiler: clang++
-            comp: clang
-            run_64bit_tests: true
-            shell: bash
-          - check_label: macos-arm
-            os: macos-14
-            compiler: clang++
-            comp: clang
-            run_m1_tests: true
-            shell: bash
-          - check_label: windoze-gcc
-            os: windows-2022
-            compiler: g++
-            comp: mingw
-            run_64bit_tests: true
-            msys_sys: mingw64
-            msys_env: x86_64-gcc
-            shell: msys2 {0}
-          - check_label: windoze-clang
-            os: windows-2022
-            compiler: clang++
-            comp: clang
-            run_64bit_tests: true
-            msys_sys: clang64
-            msys_env: clang-x86_64-clang
-            shell: msys2 {0}
-    defaults:
-      run:
-        working-directory: engine
-        shell: ${{ matrix.config.shell }}
+        include:
+          - name: linux-amd64
+            os: ubuntu-24.04
+            compiler: clang++-20
+          - name: macos-arm64
+            os: xcode-27
+            compiler: clang++-20
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Install required Linux packages
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt update
-          sudo apt install expect valgrind
-
-      - name: Install required macOS packages
-        if: runner.os == 'macOS'
-        run: brew install coreutils gcc@11
-
-      - name: Set up MSYS2 and install required packages
-        if: runner.os == 'Windows'
-        uses: msys2/setup-msys2@v2
-        with:
-          msystem: ${{ matrix.config.msys_sys }}
-          install: mingw-w64-${{ matrix.config.msys_env }} make git expect
-
       - name: Set up build environment
         uses: ./.github/actions/build-setup
         with:
-          compiler: ${{ matrix.config.compiler }}
-          shell: ${{ matrix.config.shell }}
+          compiler: ${{ matrix.compiler }}
+          shell: bash
+          ci_toolchain: 'true'
 
-      - name: Extract the bench number from the commit history
+      - name: Extract benchmark reference
+        id: benchref
+        shell: bash
         run: |
-          for hash in $(git rev-list -100 HEAD); do
-            benchref=$(git show -s $hash | tac | grep -m 1 -o -x '[[:space:]]*\b[Bb]ench[ :]\+[1-9][0-9]\{5,7\}\b[[:space:]]*' | sed 's/[^0-9]//g') && break || true
-          done
-          [[ -n "$benchref" ]] && echo "benchref=$benchref" >> $GITHUB_ENV && echo "From commit: $hash" && echo "Reference bench: $benchref" || echo "No bench found"
+          benchref=$(git log -100 --format=%B \
+            | grep -m1 -E \
+              '^[[:space:]]*[Bb]ench[ :]+[1-9][0-9]{5,7}[[:space:]]*$' \
+            | tr -cd '0-9' || true)
+          echo "value=$benchref" >> "$GITHUB_OUTPUT"
 
-      - name: Build debug x86-64-avx2
-        if: matrix.config.run_64bit_tests
-        uses: ./.github/actions/build
-        with:
-          target: build
-          make_args: ARCH=x86-64-avx2 optimize=no debug=yes
-          cxxflags: -Werror -D_GLIBCXX_DEBUG
-
-      - name: Check debug x86-64-avx2 signature
-        if: matrix.config.run_64bit_tests
+      - name: Build and test
+        shell: bash
+        env:
+          RUKH_CXX: ${{ matrix.compiler }}
         run: |
-          ../tests/signature.sh $benchref
+          make rukh.test RUKH_PROFILE=release \
+            RUKH_CMAKE_CONFIGURE_ARGS="-DCMAKE_CXX_COMPILER=$RUKH_CXX"
 
-      - name: Build x86-64-bmi2
-        if: matrix.config.run_64bit_tests
-        uses: ./.github/actions/build
-        with:
-          target: build
-          make_args: ARCH=x86-64-bmi2
-          cxxflags: ${{ env.CXXFLAGS }}
-
-      - name: Check x86-64-bmi2 signature
-        if: matrix.config.run_64bit_tests
+      - name: Run engine regression checks
+        shell: bash
+        env:
+          BENCHMARK_REFERENCE: ${{ steps.benchref.outputs.value }}
         run: |
-          ../tests/signature.sh $benchref
-
-      - name: Build x86-64-avx2
-        if: matrix.config.run_64bit_tests
-        uses: ./.github/actions/build
-        with:
-          target: build
-          make_args: ARCH=x86-64-avx2
-          cxxflags: ${{ env.CXXFLAGS }}
-
-      - name: Check x86-64-avx2 signature
-        if: matrix.config.run_64bit_tests
-        run: |
-          ../tests/signature.sh $benchref
-
-      - name: Build x86-64-modern
-        if: matrix.config.run_64bit_tests
-        uses: ./.github/actions/build
-        with:
-          target: build
-          make_args: ARCH=x86-64-modern
-          cxxflags: ${{ env.CXXFLAGS }}
-
-      - name: Check x86-64-modern signature
-        if: matrix.config.run_64bit_tests
-        run: |
-          ../tests/signature.sh $benchref
-
-      - name: Build x86-64-sse41-popcnt
-        if: matrix.config.run_64bit_tests
-        uses: ./.github/actions/build
-        with:
-          target: build
-          make_args: ARCH=x86-64-sse41-popcnt
-          cxxflags: ${{ env.CXXFLAGS }}
-
-      - name: Check x86-64-sse41-popcnt signature
-        if: matrix.config.run_64bit_tests
-        run: |
-          ../tests/signature.sh $benchref
-
-      - name: Build x86-64-ssse3
-        if: matrix.config.run_64bit_tests
-        uses: ./.github/actions/build
-        with:
-          target: build
-          make_args: ARCH=x86-64-ssse3
-          cxxflags: ${{ env.CXXFLAGS }}
-
-      - name: Check x86-64-ssse3 signature
-        if: matrix.config.run_64bit_tests
-        run: |
-          ../tests/signature.sh $benchref
-
-      - name: Build x86-64-sse3-popcnt
-        if: matrix.config.run_64bit_tests
-        uses: ./.github/actions/build
-        with:
-          target: build
-          make_args: ARCH=x86-64-sse3-popcnt
-          cxxflags: ${{ env.CXXFLAGS }}
-
-      - name: Check x86-64-sse3-popcnt signature
-        if: matrix.config.run_64bit_tests
-        run: |
-          ../tests/signature.sh $benchref
-
-      - name: Build x86-64
-        if: matrix.config.run_64bit_tests
-        uses: ./.github/actions/build
-        with:
-          target: build
-          make_args: ARCH=x86-64
-          cxxflags: ${{ env.CXXFLAGS }}
-
-      - name: Check x86-64 signature
-        if: matrix.config.run_64bit_tests
-        run: |
-          ../tests/signature.sh $benchref
-
-      - name: Build general-64
-        if: matrix.config.run_64bit_tests
-        uses: ./.github/actions/build
-        with:
-          target: build
-          make_args: ARCH=general-64
-          cxxflags: ${{ env.CXXFLAGS }}
-
-      - name: Check general-64 signature
-        if: matrix.config.run_64bit_tests
-        run: |
-          ../tests/signature.sh $benchref
-
-      - name: Build apple-silicon
-        if: matrix.config.run_m1_tests
-        uses: ./.github/actions/build
-        with:
-          target: build
-          make_args: ARCH=apple-silicon
-          cxxflags: ${{ env.CXXFLAGS }}
-
-      - name: Check apple-silicon signature
-        if: matrix.config.run_m1_tests
-        run: |
-          ../tests/signature.sh $benchref
-
-
-      - name: Build x86-64-avx2 for perft and search checks
-        if: matrix.config.run_64bit_tests
-        uses: ./.github/actions/build
-        with:
-          target: build
-          make_args: ARCH=x86-64-avx2
-          cxxflags: ${{ env.CXXFLAGS }}
-
-      - name: Run perft and search reproducibility checks
-        if: matrix.config.run_64bit_tests
-        run: |
+          engine_binary="$GITHUB_WORKSPACE/_build/engine/release/rukh"
+          ln -s "$engine_binary" "$GITHUB_WORKSPACE/engine/stockfish"
+          ln -s "$engine_binary" "$GITHUB_WORKSPACE/engine/shashchess"
+          cd "$GITHUB_WORKSPACE/engine"
+          if [[ -n "$BENCHMARK_REFERENCE" ]]; then
+            ../tests/signature.sh "$BENCHMARK_REFERENCE"
+          else
+            ../tests/signature.sh
+          fi
           ../tests/perft.sh
           ../tests/reprosearch.sh
