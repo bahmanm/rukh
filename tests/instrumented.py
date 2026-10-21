@@ -187,8 +187,8 @@ class TestCLI(metaclass=OrderedClassMembers):
                 network = line.split(" ")[-1]
                 break
 
-        # find network file in src dir
-        network = os.path.join(PATH.parent.resolve(), "src", network)
+        # find network file in engine dir
+        network = os.path.join(PATH.parent.resolve(), "engine", network)
 
         if not os.path.exists(network):
             print(

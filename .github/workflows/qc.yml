@@ -61,7 +61,7 @@ jobs:
             instrumented_option: non
     defaults:
       run:
-        working-directory: src
+        working-directory: engine
         shell: ${{ matrix.config.shell }}
     steps:
       - uses: actions/checkout@v4
@@ -90,6 +90,6 @@ jobs:
           cxxflags: -O1 -f-no-inline ${{ matrix.sanitisers.cxx_extra_flags }}
 
       - name: ${{ matrix.sanitisers.name }}
-        working-directory: src
+        working-directory: engine
         shell: ${{ matrix.config.shell }}
         run: python3 ../tests/instrumented.py --${{ matrix.sanitisers.instrumented_option }} ./shashchess

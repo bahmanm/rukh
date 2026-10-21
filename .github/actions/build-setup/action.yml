@@ -13,21 +13,21 @@ runs:
     - name: Download neural network
       run: make net
       shell: ${{ inputs.shell }}
-      working-directory: src
+      working-directory: engine
 
     - name: Check compiler
       run: $COMPCXX -v
       shell: ${{ inputs.shell }}
-      working-directory: src
+      working-directory: engine
       env:
         COMPCXX: ${{ inputs.compiler }}
 
     - name: Check Make help target
       run: make help
       shell: ${{ inputs.shell }}
-      working-directory: src
+      working-directory: engine
 
     - name: Check Git version
       run: git --version
       shell: ${{ inputs.shell }}
-      working-directory: src
+      working-directory: engine

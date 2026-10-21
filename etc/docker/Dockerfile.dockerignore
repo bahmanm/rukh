@@ -1,0 +1,14 @@
+.git
+_build
+**/cmake-build-*
+**/*.nnue
+doc
+logo
+wav
+webpages
+.github
+*.docx
+*.odt
+*.xlsx
+differenze.txt
+"Top CPU Contributors.txt"

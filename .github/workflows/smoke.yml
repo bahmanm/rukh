@@ -14,7 +14,7 @@ jobs:
     name: smoke__games
     runs-on: ubuntu-22.04
     env:
-      ENGINE: ${{ github.workspace }}/src/shashchess
+      ENGINE: ${{ github.workspace }}/engine/shashchess
     steps:
       - uses: actions/checkout@v4
         with:
@@ -59,7 +59,7 @@ jobs:
     name: smoke__matetrack
     runs-on: ubuntu-22.04
     env:
-      ENGINE: ${{ github.workspace }}/src/shashchess
+      ENGINE: ${{ github.workspace }}/engine/shashchess
     steps:
       - uses: actions/checkout@v4
         with:
