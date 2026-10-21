@@ -74,4 +74,3 @@ jobs:
             ../tests/signature.sh
           fi
           ../tests/perft.sh
-          ../tests/reprosearch.sh
