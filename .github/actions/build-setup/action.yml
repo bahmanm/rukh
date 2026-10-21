@@ -37,6 +37,8 @@ runs:
         brew install expect llvm@20 make
         echo "$(brew --prefix make)/libexec/gnubin" >> "$GITHUB_PATH"
         echo "$(brew --prefix llvm@20)/bin" >> "$GITHUB_PATH"
+        sdkroot="$(xcrun --show-sdk-path)"
+        echo "SDKROOT=$sdkroot" >> "$GITHUB_ENV"
 
     - name: Set up uv
       if: inputs.ci_toolchain == 'true'

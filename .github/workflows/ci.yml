@@ -52,8 +52,12 @@ jobs:
         env:
           RUKH_CXX: ${{ matrix.compiler }}
         run: |
+          cmake_configure_args="-DCMAKE_CXX_COMPILER=$RUKH_CXX"
+          if [[ -n "${SDKROOT:-}" ]]; then
+            cmake_configure_args+=" -DCMAKE_OSX_SYSROOT=$SDKROOT"
+          fi
           make rukh.test RUKH_PROFILE=release \
-            RUKH_CMAKE_CONFIGURE_ARGS="-DCMAKE_CXX_COMPILER=$RUKH_CXX"
+            RUKH_CMAKE_CONFIGURE_ARGS="$cmake_configure_args"
 
       - name: Run engine regression checks
         shell: bash
