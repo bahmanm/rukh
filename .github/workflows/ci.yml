@@ -57,7 +57,7 @@ jobs:
             shell: msys2 {0}
     defaults:
       run:
-        working-directory: src
+        working-directory: engine
         shell: ${{ matrix.config.shell }}
     steps:
       - uses: actions/checkout@v4

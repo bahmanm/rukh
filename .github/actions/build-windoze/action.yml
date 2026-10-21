@@ -21,7 +21,7 @@ runs:
   steps:
     - name: Build
       shell: msys2 {0}
-      working-directory: src
+      working-directory: engine
       env:
         MAKE_ARGS: ${{ inputs.make_args }}
         MAKE_TARGET: ${{ inputs.target }}

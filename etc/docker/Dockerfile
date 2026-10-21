@@ -28,7 +28,7 @@ WORKDIR /rukh
 COPY Makefile ./
 COPY etc/make/ ./etc/make/
 COPY etc/cmake/ ./etc/cmake/
-COPY src/ ./src/
+COPY engine/ ./engine/
 COPY tests/ ./tests/
 
 RUN make rukh.test \

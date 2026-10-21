@@ -694,16 +694,12 @@ from getting large pages: a fresh session is better in this regard.
 Stockfish has support for 32 or 64-bit CPUs, certain hardware
 instructions, big-endian machines such as Power PC, and other platforms.
 
-On Unix-like systems, it should be easy to compile Stockfish
-directly from the source code with the included Makefile in the folder
-`src`. In general it is recommended to run `make help` to see a list of make
-targets with corresponding descriptions.
+Use the root Makefile to configure, build, and test Rukh. Run `make help` to
+see the available targets and descriptions.
 
 ```
-    cd src
-    make help
-    make net
-    make build ARCH=x86-64-modern
+    make rukh.engine.build
+    make rukh.engine.test
 ```
 
 When not using the Makefile to compile (for instance with Microsoft MSVC) you

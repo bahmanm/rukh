@@ -3,7 +3,7 @@
 export ROOT := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
 include $(ROOT)etc/make/common.mk
-include $(ROOT)src/Makefile
+include $(ROOT)engine/Makefile
 
 rukh.configure : rukh.engine.configure ## Configure all Rukh components
 .PHONY : rukh.configure

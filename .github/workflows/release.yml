@@ -33,7 +33,7 @@ jobs:
             package_name=${binary_name%.exe}
             package_dir=$(mktemp -d)
             mkdir "$package_dir/rukh"
-            cp -R "$artifact_dir/src" "$artifact_dir/scripts" "$package_dir/rukh/"
+            cp -R "$artifact_dir/engine" "$artifact_dir/scripts" "$package_dir/rukh/"
             cp "$binary" "$package_dir/rukh/"
             cp "$artifact_dir/Copying.txt" "$artifact_dir/AUTHORS" "$artifact_dir/CITATION.cff" "$artifact_dir/README.md" "$artifact_dir/CONTRIBUTING.md" "$package_dir/rukh/"
 

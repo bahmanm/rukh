@@ -1,9 +1,9 @@
-ifndef __rukh_src_Makefile
-__rukh_src_Makefile := 1
+ifndef __rukh_engine_Makefile
+__rukh_engine_Makefile := 1
 
 rukh.engine.configure : ## Configure the engine CMake project
 	$(RUKH_CMAKE) \
-		-S "$(ROOT)src" \
+		-S "$(ROOT)engine" \
 		-B "$(RUKH_ENGINE_BUILD_DIR)" \
 		$(if $(RUKH_CMAKE_GENERATOR),-G "$(RUKH_CMAKE_GENERATOR)") \
 		-DCMAKE_BUILD_TYPE=$(RUKH_CMAKE_BUILD_TYPE) \

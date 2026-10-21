@@ -5,7 +5,7 @@
             "label": "Custom Build",
             "type": "process",
             "command": "${env:COMSPEC}",
-            "args": ["/c", "C:/git/ShashChess/src/build.bat"],
+            "args": ["/c", "C:/git/ShashChess/engine/build.bat"],
             "group": {
                 "kind": "build",
                 "isDefault": true

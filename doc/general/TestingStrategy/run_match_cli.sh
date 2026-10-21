@@ -9,7 +9,7 @@ CLI="$HOME/cutechess-extract/squashfs-root/usr/bin/cutechess-cli"
 
 time "$CLI" \
   -engine name=ShashChess \
-          cmd=/home/claudio-intel/git/ShashChessDev/src/ShashChessDev-native \
+          cmd=/home/claudio-intel/git/ShashChessDev/engine/ShashChessDev-native \
           proto=uci \
           option.Threads=4 \
           option.Hash=2048 \

@@ -30,7 +30,7 @@ jobs:
       matrix: ${{ fromJson(needs.Matrix.outputs.matrix) }}
     defaults:
       run:
-        working-directory: src
+        working-directory: engine
         shell: ${{ matrix.config.shell }}
     steps:
       - uses: actions/checkout@v4
