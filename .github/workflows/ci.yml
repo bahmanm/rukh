@@ -23,7 +23,7 @@ jobs:
             compiler: clang++-20
           - name: macos-arm64
             os: xcode-27
-            compiler: clang++-20
+            compiler: clang-20
     steps:
       - uses: actions/checkout@v4
         with:

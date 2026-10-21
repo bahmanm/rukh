@@ -19,7 +19,16 @@ runs:
       shell: bash
       run: |
         sudo apt-get update
-        sudo apt-get install --yes clang-20 expect libcurl4-openssl-dev
+        sudo apt-get install --yes \
+          build-essential clang-20 expect libcurl4-openssl-dev
+        curl -fsSL https://mirrors.kernel.org/gnu/make/make-4.4.1.tar.gz \
+          | tar -xz -C /tmp
+        cd /tmp/make-4.4.1
+        ./configure --prefix=/usr/local
+        make -j"$(nproc)"
+        sudo make install
+        cd /
+        rm -rf /tmp/make-4.4.1
 
     - name: Install macOS build tools
       if: inputs.ci_toolchain == 'true' && runner.os == 'macOS'
