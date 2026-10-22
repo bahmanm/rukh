@@ -91,6 +91,16 @@ if( BUILD_TESTING )
         COMMAND rukh_support_shared_memory_tests )
 
     add_executable(
+        rukh_support_text_tests
+        tests/text_tests.cpp )
+    target_link_libraries(
+        rukh_support_text_tests
+        PRIVATE RukhSupport::RukhSupport )
+    add_test(
+        NAME rukh-support-text
+        COMMAND rukh_support_text_tests )
+
+    add_executable(
         rukh_support_hash_tests
         tests/hash_tests.cpp )
     target_link_libraries(

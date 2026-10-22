@@ -38,6 +38,7 @@
 #include <cstring>
 
 #include <rukh/support/shared_memory.h>
+#include <rukh/support/text.h>
 
 // We support linux very well, but we explicitly do NOT support Android,
 // because there is no affected systems, not worth maintaining.
@@ -669,7 +670,7 @@ class NumaConfig {
         NumaConfig cfg = empty();
 
         NumaIndex n = 0;
-        for (auto&& nodeStr : split(s, ":"))
+        for (auto&& nodeStr : text::split(s, ":"))
         {
             auto indices = indices_from_shortened_string(std::string(nodeStr));
             if (!indices.empty())
@@ -1034,21 +1035,21 @@ class NumaConfig {
         if (s.empty())
             return indices;
 
-        for (const auto& ss : split(s, ","))
+        for (const auto& ss : text::split(s, ","))
         {
             if (ss.empty())
                 continue;
 
-            auto parts = split(ss, "-");
+            auto parts = text::split(ss, "-");
             if (parts.size() == 1)
             {
-                const CpuIndex c = CpuIndex{str_to_size_t(std::string(parts[0]))};
+                const CpuIndex c = CpuIndex{text::parse_size_t(parts[0])};
                 indices.emplace_back(c);
             }
             else if (parts.size() == 2)
             {
-                const CpuIndex cfirst = CpuIndex{str_to_size_t(std::string(parts[0]))};
-                const CpuIndex clast  = CpuIndex{str_to_size_t(std::string(parts[1]))};
+                const CpuIndex cfirst = CpuIndex{text::parse_size_t(parts[0])};
+                const CpuIndex clast  = CpuIndex{text::parse_size_t(parts[1])};
                 for (size_t c = cfirst; c <= clast; ++c)
                 {
                     indices.emplace_back(c);
@@ -1089,7 +1090,7 @@ class NumaConfig {
         }
         else
         {
-            remove_whitespace(*nodeIdsStr);
+            text::remove_whitespace(*nodeIdsStr);
             for (size_t n : indices_from_shortened_string(*nodeIdsStr))
             {
                 // /sys/devices/system/node/node.../cpulist
@@ -1106,7 +1107,7 @@ class NumaConfig {
                 }
                 else
                 {
-                    remove_whitespace(*cpuIdsStr);
+                    text::remove_whitespace(*cpuIdsStr);
                     for (size_t c : indices_from_shortened_string(*cpuIdsStr))
                     {
                         if (is_cpu_allowed(c))

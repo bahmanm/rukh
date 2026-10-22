@@ -32,6 +32,7 @@
 #include "benchmark.h"
 #include "engine.h"
 #include <rukh/support/memory.h>
+#include <rukh/support/text.h>
 #include "movegen.h"
 #include "position.h"
 #include "score.h"
@@ -58,9 +59,9 @@ overload(Ts...) -> overload<Ts...>;
 
 void UCIEngine::print_info_string(std::string_view str) {
     sync_cout_start();
-    for (auto& line : split(str, "\n"))
+    for (auto& line : text::split(str, "\n"))
     {
-        if (!is_whitespace(line))
+        if (!text::is_whitespace(line))
         {
             std::cout << "info string " << line << '\n';
         }

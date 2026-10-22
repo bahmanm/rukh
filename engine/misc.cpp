@@ -465,26 +465,11 @@ void prefetch(const void* addr) {
     #define GETCWD getcwd
 #endif
 
-size_t str_to_size_t(const std::string& s) {
-    unsigned long long value = std::stoull(s);
-    if (value > std::numeric_limits<size_t>::max())
-        std::exit(EXIT_FAILURE);
-    return static_cast<size_t>(value);
-}
-
 std::optional<std::string> read_file_to_string(const std::string& path) {
     std::ifstream f(path, std::ios_base::binary);
     if (!f)
         return std::nullopt;
     return std::string(std::istreambuf_iterator<char>(f), std::istreambuf_iterator<char>());
-}
-
-void remove_whitespace(std::string& s) {
-    s.erase(std::remove_if(s.begin(), s.end(), [](char c) { return std::isspace(c); }), s.end());
-}
-
-bool is_whitespace(std::string_view s) {
-    return std::all_of(s.begin(), s.end(), [](char c) { return std::isspace(c); });
 }
 
 //from learning begin

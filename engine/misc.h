@@ -70,8 +70,6 @@ void prefetch(const void* addr);
 
 void start_logger(const std::string& fname);
 
-size_t str_to_size_t(const std::string& s);
-
 #if defined(__linux__)
 
 struct PipeDeleter {
@@ -104,31 +102,6 @@ inline TimePoint now() {
              std::chrono::steady_clock::now().time_since_epoch())
       .count();
 }
-
-inline std::vector<std::string_view> split(std::string_view s, std::string_view delimiter) {
-    std::vector<std::string_view> res;
-
-    if (s.empty())
-        return res;
-
-    size_t begin = 0;
-    for (;;)
-    {
-        const size_t end = s.find(delimiter, begin);
-        if (end == std::string::npos)
-            break;
-
-        res.emplace_back(s.substr(begin, end - begin));
-        begin = end + delimiter.size();
-    }
-
-    res.emplace_back(s.substr(begin));
-
-    return res;
-}
-
-void remove_whitespace(std::string& s);
-bool is_whitespace(std::string_view s);
 
 enum SyncCout {
     IO_LOCK,
