@@ -81,6 +81,16 @@ install(
 
 if( BUILD_TESTING )
     add_executable(
+        rukh_support_multi_array_tests
+        tests/multi_array_tests.cpp )
+    target_link_libraries(
+        rukh_support_multi_array_tests
+        PRIVATE RukhSupport::RukhSupport )
+    add_test(
+        NAME rukh-support-multi-array
+        COMMAND rukh_support_multi_array_tests )
+
+    add_executable(
         rukh_support_shared_memory_tests
         tests/shared_memory_tests.cpp )
     target_link_libraries(
