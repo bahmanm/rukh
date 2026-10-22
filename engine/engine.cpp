@@ -38,7 +38,7 @@
 #include "perft.h"
 #include "position.h"
 #include "search.h"
-#include "shm.h"
+#include <rukh/support/shared_memory.h>
 #include "syzygy/tbprobe.h"
 #include "types.h"
 #include "uci.h"

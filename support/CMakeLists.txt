@@ -76,6 +76,16 @@ install(
 
 if( BUILD_TESTING )
     add_executable(
+        rukh_support_shared_memory_tests
+        tests/shared_memory_tests.cpp )
+    target_link_libraries(
+        rukh_support_shared_memory_tests
+        PRIVATE RukhSupport::RukhSupport )
+    add_test(
+        NAME rukh-support-shared-memory
+        COMMAND rukh_support_shared_memory_tests )
+
+    add_executable(
         rukh_support_hash_tests
         tests/hash_tests.cpp )
     target_link_libraries(

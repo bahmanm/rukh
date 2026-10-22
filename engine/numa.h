@@ -37,7 +37,7 @@
 #include <vector>
 #include <cstring>
 
-#include "shm.h"
+#include <rukh/support/shared_memory.h>
 
 // We support linux very well, but we explicitly do NOT support Android,
 // because there is no affected systems, not worth maintaining.
