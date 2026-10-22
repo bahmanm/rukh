@@ -3,6 +3,7 @@
 #include <sstream>
 #include "../misc.h"
 #include "learn.h"
+#include <rukh/support/prng.h>
 #include <algorithm>
 #include <cstdint>
 #include "../uci.h"

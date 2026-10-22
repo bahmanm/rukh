@@ -81,6 +81,16 @@ install(
 
 if( BUILD_TESTING )
     add_executable(
+        rukh_support_prng_tests
+        tests/prng_tests.cpp )
+    target_link_libraries(
+        rukh_support_prng_tests
+        PRIVATE RukhSupport::RukhSupport )
+    add_test(
+        NAME rukh-support-prng
+        COMMAND rukh_support_prng_tests )
+
+    add_executable(
         rukh_support_fixed_string_tests
         tests/fixed_string_tests.cpp )
     target_link_libraries(

@@ -24,6 +24,7 @@ MCTS: Intelligently activate or avoid it.
 Local assessments: Penalize or reward based on king's security, tactical complexity, etc.
 */
 #include "search.h"
+#include <rukh/support/prng.h>
 //variety begin
 #include <random>
 #include <chrono>
