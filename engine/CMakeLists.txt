@@ -15,7 +15,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 find_package(Threads REQUIRED)
 find_package(CURL REQUIRED)
-find_package(rukh_support CONFIG REQUIRED)
+find_package(RukhSupport CONFIG REQUIRED)
 
 set(RUKH_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 

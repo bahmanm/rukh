@@ -14,6 +14,7 @@ include( "${CMAKE_CURRENT_SOURCE_DIR}/../etc/cmake/platform-check.cmake" )
 include( CTest )
 include( GNUInstallDirs )
 include( CMakePackageConfigHelpers )
+find_package( Threads REQUIRED )
 
 set( CMAKE_CXX_STANDARD 23 )
 set( CMAKE_CXX_STANDARD_REQUIRED ON )
@@ -37,6 +38,9 @@ target_include_directories(
 target_compile_features(
     rukh_support
     PUBLIC cxx_std_23 )
+target_link_libraries(
+    rukh_support
+    PUBLIC Threads::Threads )
 target_compile_options(
     rukh_support
     PRIVATE
@@ -44,31 +48,31 @@ target_compile_options(
 
 install(
     TARGETS rukh_support
-    EXPORT rukh_supportTargets
+    EXPORT RukhSupportTargets
     ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
     LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
     RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
     INCLUDES DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}" )
 install( DIRECTORY include/ DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}" )
 install(
-    EXPORT rukh_supportTargets
-    FILE rukh_supportTargets.cmake
+    EXPORT RukhSupportTargets
     NAMESPACE RukhSupport::
-    DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/rukh_support" )
+    FILE RukhSupportTargets.cmake
+    DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/RukhSupport" )
 
 configure_package_config_file(
-    cmake/rukh_supportConfig.cmake.in
-    "${CMAKE_CURRENT_BINARY_DIR}/rukh_supportConfig.cmake"
-    INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/rukh_support" )
+    cmake/RukhSupportConfig.cmake.in
+    "${CMAKE_CURRENT_BINARY_DIR}/RukhSupportConfig.cmake"
+    INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/RukhSupport" )
 write_basic_package_version_file(
-    "${CMAKE_CURRENT_BINARY_DIR}/rukh_supportConfigVersion.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/RukhSupportConfigVersion.cmake"
     VERSION "${PROJECT_VERSION}"
     COMPATIBILITY SameMajorVersion )
 install(
     FILES
-        "${CMAKE_CURRENT_BINARY_DIR}/rukh_supportConfig.cmake"
-        "${CMAKE_CURRENT_BINARY_DIR}/rukh_supportConfigVersion.cmake"
-    DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/rukh_support" )
+        "${CMAKE_CURRENT_BINARY_DIR}/RukhSupportConfig.cmake"
+        "${CMAKE_CURRENT_BINARY_DIR}/RukhSupportConfigVersion.cmake"
+    DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/RukhSupport" )
 
 if( BUILD_TESTING )
     add_executable(
@@ -80,4 +84,14 @@ if( BUILD_TESTING )
     add_test(
         NAME rukh-support-memory
         COMMAND rukh_support_memory_tests )
+
+    add_executable(
+        rukh_support_native_thread_tests
+        tests/native_thread_tests.cpp )
+    target_link_libraries(
+        rukh_support_native_thread_tests
+        PRIVATE RukhSupport::RukhSupport )
+    add_test(
+        NAME rukh-support-native-thread
+        COMMAND rukh_support_native_thread_tests )
 endif()
