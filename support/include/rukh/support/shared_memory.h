@@ -19,10 +19,6 @@
 #include <utility>
 #include <variant>
 
-#if defined(__linux__) && !defined(__ANDROID__)
-#include <rukh/support/shared_memory_linux.h>
-#endif
-
 #if defined(__ANDROID__)
 #include <limits.h>
 #endif
@@ -72,6 +68,170 @@
 
 namespace ShashChess
 {
+
+#if defined(__linux__) && !defined(__ANDROID__)
+    namespace shm
+    {
+
+        namespace detail
+        {
+
+            class SharedMemoryRegion
+            {
+                public:
+                    using Initializer = void (*)(
+                        void*,
+                        const void*);
+
+                    explicit SharedMemoryRegion(const std::string& name) noexcept;
+                    ~SharedMemoryRegion() noexcept;
+
+                    SharedMemoryRegion(const SharedMemoryRegion&) = delete;
+                    SharedMemoryRegion&
+                    operator=(const SharedMemoryRegion&) = delete;
+                    SharedMemoryRegion(SharedMemoryRegion&& other) noexcept;
+                    SharedMemoryRegion&
+                    operator=(SharedMemoryRegion&& other) noexcept;
+
+                    bool
+                    open(
+                        std::size_t data_size,
+                        Initializer initializer,
+                        const void* initial_value) noexcept;
+                    void
+                    close(bool skip_unmap = false) noexcept;
+                    void*
+                    data() const noexcept;
+                    bool
+                    is_open() const noexcept;
+                    std::uint32_t
+                    ref_count() const noexcept;
+                    bool
+                    is_initialized() const noexcept;
+                    const std::string&
+                    name() const noexcept;
+
+                    static void
+                    cleanup_all_instances() noexcept;
+
+                private:
+                    void* implementation_ = nullptr;
+            };
+
+        } // namespace detail
+
+        template <typename T> class SharedMemory
+        {
+                static_assert(
+                    std::is_trivially_copyable_v<T>,
+                    "T must be trivially copyable");
+                static_assert(
+                    !std::is_pointer_v<T>,
+                    "T cannot be a pointer type");
+
+            public:
+                explicit SharedMemory(const std::string& name) noexcept : region_(name)
+                {}
+
+                SharedMemory(const SharedMemory&) = delete;
+                SharedMemory&
+                operator=(const SharedMemory&) = delete;
+                SharedMemory(SharedMemory&&) noexcept = default;
+                SharedMemory&
+                operator=(SharedMemory&&) noexcept = default;
+
+                [[nodiscard]] bool
+                open(const T& initial_value) noexcept
+                {
+                    return region_.open(sizeof(T), initialize, &initial_value);
+                }
+
+                void
+                close(bool skip_unmap = false) noexcept
+                {
+                    region_.close(skip_unmap);
+                }
+
+                const std::string&
+                name() const noexcept
+                {
+                    return region_.name();
+                }
+
+                [[nodiscard]] bool
+                is_open() const noexcept
+                {
+                    return region_.is_open();
+                }
+
+                [[nodiscard]] const T&
+                get() const noexcept
+                {
+                    return *data();
+                }
+
+                [[nodiscard]] const T*
+                operator->() const noexcept
+                {
+                    return data();
+                }
+
+                [[nodiscard]] const T&
+                operator*() const noexcept
+                {
+                    return *data();
+                }
+
+                [[nodiscard]] std::uint32_t
+                ref_count() const noexcept
+                {
+                    return region_.ref_count();
+                }
+
+                [[nodiscard]] bool
+                is_initialized() const noexcept
+                {
+                    return region_.is_initialized();
+                }
+
+                static void
+                cleanup_all_instances() noexcept
+                {
+                    detail::SharedMemoryRegion::cleanup_all_instances();
+                }
+
+            private:
+                static void
+                initialize(
+                    void*       destination,
+                    const void* source)
+                {
+                    new (destination) T{*static_cast<const T*>(source)};
+                }
+
+                const T*
+                data() const noexcept
+                {
+                    return static_cast<const T*>(region_.data());
+                }
+
+                detail::SharedMemoryRegion region_;
+        };
+
+        template <typename T>
+        [[nodiscard]] std::optional<SharedMemory<T>>
+        create_shared(
+            const std::string& name,
+            const T&           initial_value) noexcept
+        {
+            SharedMemory<T> shared(name);
+            if (shared.open(initial_value))
+                return shared;
+            return std::nullopt;
+        }
+
+    } // namespace shm
+#endif
 
     // argv[0] CANNOT be used because we need to identify the executable.
     // argv[0] contains the command used to invoke it, which does not involve the full path.

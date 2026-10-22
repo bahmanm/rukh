@@ -23,6 +23,11 @@ set( CMAKE_CXX_EXTENSIONS OFF )
 add_library(
     rukh_support
     src/memory.cpp )
+if( CMAKE_SYSTEM_NAME STREQUAL "Linux" AND NOT ANDROID )
+    target_sources(
+        rukh_support
+        PRIVATE src/shared_memory_linux.cpp )
+endif()
 add_library(
     RukhSupport::RukhSupport
     ALIAS rukh_support )

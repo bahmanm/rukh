@@ -40,7 +40,7 @@ rukh.support.format : ## Format support C and C++ sources
 	cd "$(ROOT)" && git ls-files -z --cached --others --exclude-standard -- \
 		':(glob)support/**/*.c' ':(glob)support/**/*.cc' ':(glob)support/**/*.cpp' ':(glob)support/**/*.cxx' \
 		':(glob)support/**/*.h' ':(glob)support/**/*.hh' ':(glob)support/**/*.hpp' ':(glob)support/**/*.hxx' \
-	| xargs -0 "$(RUKH_CLANG_FORMAT)" -i
+	| xargs -0 -r -n 1 sh -c 'test ! -f "$$1" || exec "$(RUKH_CLANG_FORMAT)" -i "$$1"' sh
 .PHONY : rukh.support.format
 
 endif
