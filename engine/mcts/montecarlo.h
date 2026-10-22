@@ -22,6 +22,8 @@
 #include <cmath>
 #include <unordered_map>
 
+#include <rukh/support/clock.h>
+
 #include "../movepick.h"
 #include "../position.h"
 #include "../thread.h"

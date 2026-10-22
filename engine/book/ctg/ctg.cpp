@@ -5,6 +5,7 @@
 #include <iomanip>
 #include "../../position.h"
 #include "../../uci.h"
+#include <rukh/support/clock.h>
 #include "ctg.h"
 
 namespace ShashChess {

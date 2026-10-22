@@ -4,6 +4,7 @@
 #include <random>
 #include "../../position.h"
 #include "../../uci.h"
+#include <rukh/support/clock.h>
 #include "../file_mapping.h"
 #include "polyglot.h"
 

@@ -95,14 +95,6 @@ void dbg_correl_of(int64_t value1, int64_t value2, int slot = 0);
 void dbg_print();
 void dbg_clear();
 
-using TimePoint = std::chrono::milliseconds::rep;  // A value in milliseconds
-static_assert(sizeof(TimePoint) == sizeof(int64_t), "TimePoint should be 64 bits");
-inline TimePoint now() {
-    return std::chrono::duration_cast<std::chrono::milliseconds>(
-             std::chrono::steady_clock::now().time_since_epoch())
-      .count();
-}
-
 enum SyncCout {
     IO_LOCK,
     IO_UNLOCK

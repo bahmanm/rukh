@@ -29,6 +29,8 @@
 #include <utility>
 #include <vector>
 
+#include <rukh/support/clock.h>
+
 #include "benchmark.h"
 #include "engine.h"
 #include <rukh/support/memory.h>
