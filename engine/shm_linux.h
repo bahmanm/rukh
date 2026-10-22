@@ -47,7 +47,7 @@
 #include <limits.h>
 #define SF_MAX_SEM_NAME_LEN NAME_MAX
 
-#include "misc.h"
+#include <rukh/support/hash.h>
 
 
 namespace ShashChess::shm {

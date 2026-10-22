@@ -28,7 +28,6 @@
 #include <iomanip>
 #include <iostream>
 #include <memory>
-#include "misc.h" //ShashChess
 #include <new>
 #include <optional>
 #include <sstream>
@@ -46,8 +45,7 @@
     #define SF_MAX_SEM_NAME_LEN NAME_MAX
 #endif
 
-#include "types.h"
-
+#include <rukh/support/hash.h>
 #include <rukh/support/memory.h>
 
 #if defined(_WIN32)

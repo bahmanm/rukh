@@ -76,6 +76,16 @@ install(
 
 if( BUILD_TESTING )
     add_executable(
+        rukh_support_hash_tests
+        tests/hash_tests.cpp )
+    target_link_libraries(
+        rukh_support_hash_tests
+        PRIVATE RukhSupport::RukhSupport )
+    add_test(
+        NAME rukh-support-hash
+        COMMAND rukh_support_hash_tests )
+
+    add_executable(
         rukh_support_memory_tests
         tests/memory_tests.cpp )
     target_link_libraries(

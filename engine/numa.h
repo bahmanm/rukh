@@ -73,6 +73,8 @@ using GetThreadSelectedCpuSetMasks_t = BOOL (*)(HANDLE, PGROUP_AFFINITY, USHORT,
 
 #endif
 
+#include <rukh/support/hash.h>
+#include <rukh/support/memory.h>
 #include "misc.h"
 
 namespace ShashChess {
