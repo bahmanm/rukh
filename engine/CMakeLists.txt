@@ -15,6 +15,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 find_package(Threads REQUIRED)
 find_package(CURL REQUIRED)
+find_package(rukh_support CONFIG REQUIRED)
 
 set(RUKH_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 
@@ -46,7 +47,6 @@ set(RUKH_SOURCES
     livebook/analysis/Wdl.cpp
     main.cpp
     mcts/montecarlo.cpp
-    memory.cpp
     misc.cpp
     movegen.cpp
     movepick.cpp
@@ -77,7 +77,7 @@ target_compile_options(rukh PRIVATE
     $<$<CXX_COMPILER_ID:Clang>:-Wall;-Wextra;-Wpedantic;-Wcast-qual;-fexceptions>
     $<$<CONFIG:Release>:-O3;-funroll-loops>
 )
-target_link_libraries(rukh PRIVATE CURL::libcurl Threads::Threads)
+target_link_libraries(rukh PRIVATE RukhSupport::RukhSupport CURL::libcurl Threads::Threads)
 include("${CMAKE_CURRENT_SOURCE_DIR}/../etc/cmake/download-network.cmake")
 
 if(WIN32)

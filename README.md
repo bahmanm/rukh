@@ -698,9 +698,13 @@ Use the root Makefile to configure, build, and test Rukh. Run `make help` to
 see the available targets and descriptions.
 
 ```
+    make rukh.support.test
     make rukh.engine.build
     make rukh.engine.test
 ```
+
+The support component can be built and tested on its own. Engine targets build
+and install its support dependency before configuring the engine project.
 
 When not using the Makefile to compile (for instance with Microsoft MSVC) you
 need to manually set/unset some switches in the compiler command line; see

@@ -48,7 +48,7 @@
 
 #include "types.h"
 
-#include "memory.h"
+#include <rukh/support/memory.h>
 
 #if defined(_WIN32)
 

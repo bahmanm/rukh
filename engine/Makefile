@@ -1,12 +1,13 @@
 ifndef __rukh_engine_Makefile
 __rukh_engine_Makefile := 1
 
-rukh.engine.configure : ## Configure the engine CMake project
+rukh.engine.configure : rukh.support.install ## Configure the engine CMake project
 	$(RUKH_CMAKE) \
 		-S "$(ROOT)engine" \
 		-B "$(RUKH_ENGINE_BUILD_DIR)" \
 		$(if $(RUKH_CMAKE_GENERATOR),-G "$(RUKH_CMAKE_GENERATOR)") \
 		-DCMAKE_BUILD_TYPE=$(RUKH_CMAKE_BUILD_TYPE) \
+		-DCMAKE_PREFIX_PATH="$(RUKH_SUPPORT_INSTALL_DIR)" \
 		$(RUKH_CMAKE_CONFIGURE_ARGS)
 .PHONY : rukh.engine.configure
 
@@ -35,5 +36,9 @@ rukh.engine.install : rukh.engine.build ## Install the engine under _build/insta
 rukh.engine.clean : ## Remove engine build and install artefacts
 	rm -rf "$(RUKH_ENGINE_BUILD_DIR)" "$(RUKH_ENGINE_INSTALL_DIR)"
 .PHONY : rukh.engine.clean
+
+rukh.engine.format : ## Format engine C and C++ sources
+	@:
+.PHONY : rukh.engine.format
 
 endif

@@ -31,7 +31,7 @@
 
 #include "benchmark.h"
 #include "engine.h"
-#include "memory.h"
+#include <rukh/support/memory.h>
 #include "movegen.h"
 #include "position.h"
 #include "score.h"

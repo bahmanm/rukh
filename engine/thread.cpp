@@ -29,7 +29,7 @@
 
 #include "bitboard.h"
 #include "history.h"
-#include "memory.h"
+#include <rukh/support/memory.h>
 #include "movegen.h"
 #include "search.h"
 #include "syzygy/tbprobe.h"
