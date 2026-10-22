@@ -22,6 +22,7 @@ set( CMAKE_CXX_EXTENSIONS OFF )
 
 add_library(
     rukh_support
+    src/io.cpp
     src/memory.cpp )
 if( CMAKE_SYSTEM_NAME STREQUAL "Linux" AND NOT ANDROID )
     target_sources(
@@ -80,6 +81,16 @@ install(
     DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/RukhSupport" )
 
 if( BUILD_TESTING )
+    add_executable(
+        rukh_support_io_tests
+        tests/io_tests.cpp )
+    target_link_libraries(
+        rukh_support_io_tests
+        PRIVATE RukhSupport::RukhSupport )
+    add_test(
+        NAME rukh-support-io
+        COMMAND rukh_support_io_tests )
+
     add_executable(
         rukh_support_clock_tests
         tests/clock_tests.cpp )

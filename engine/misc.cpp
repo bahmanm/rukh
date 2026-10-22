@@ -465,13 +465,6 @@ void prefetch(const void* addr) {
     #define GETCWD getcwd
 #endif
 
-std::optional<std::string> read_file_to_string(const std::string& path) {
-    std::ifstream f(path, std::ios_base::binary);
-    if (!f)
-        return std::nullopt;
-    return std::string(std::istreambuf_iterator<char>(f), std::istreambuf_iterator<char>());
-}
-
 //from learning begin
 CommandLine::CommandLine(int _argc, char** _argv) :
     argc(_argc),

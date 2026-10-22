@@ -39,6 +39,7 @@
 
 #include <rukh/support/shared_memory.h>
 #include <rukh/support/text.h>
+#include <rukh/support/io.h>
 
 // We support linux very well, but we explicitly do NOT support Android,
 // because there is no affected systems, not worth maintaining.
@@ -1083,7 +1084,7 @@ class NumaConfig {
         };
 
         // /sys/devices/system/node/online contains information about active NUMA nodes
-        auto nodeIdsStr = read_file_to_string("/sys/devices/system/node/online");
+        auto nodeIdsStr = io::read_file_to_string("/sys/devices/system/node/online");
         if (!nodeIdsStr.has_value() || nodeIdsStr->empty())
         {
             fallback();
@@ -1096,7 +1097,7 @@ class NumaConfig {
                 // /sys/devices/system/node/node.../cpulist
                 std::string path =
                   std::string("/sys/devices/system/node/node") + std::to_string(n) + "/cpulist";
-                auto cpuIdsStr = read_file_to_string(path);
+                auto cpuIdsStr = io::read_file_to_string(path);
                 // Now, we only bail if the file does not exist. Some nodes may be
                 // empty, that's fine. An empty node still has a file that appears
                 // to have some whitespace, so we need to handle that.
@@ -1179,7 +1180,7 @@ class NumaConfig {
         {
             CpuIndex next = nextUnseenCpu();
             auto     siblingsStr =
-              read_file_to_string("/sys/devices/system/cpu/cpu" + std::to_string(next)
+              io::read_file_to_string("/sys/devices/system/cpu/cpu" + std::to_string(next)
                                   + "/cache/index3/shared_cpu_list");
 
             if (!siblingsStr.has_value() || siblingsStr->empty())
