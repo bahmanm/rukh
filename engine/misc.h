@@ -167,77 +167,6 @@ class PRNG {
     }
 };
 
-template<std::size_t Capacity>
-class FixedString {
-   public:
-    FixedString() :
-        length_(0) {
-        data_[0] = '\0';
-    }
-
-    FixedString(const char* str) {
-        size_t len = std::strlen(str);
-        if (len > Capacity)
-            std::terminate();
-        std::memcpy(data_, str, len);
-        length_        = len;
-        data_[length_] = '\0';
-    }
-
-    FixedString(const std::string& str) {
-        if (str.size() > Capacity)
-            std::terminate();
-        std::memcpy(data_, str.data(), str.size());
-        length_        = str.size();
-        data_[length_] = '\0';
-    }
-
-    std::size_t size() const { return length_; }
-    std::size_t capacity() const { return Capacity; }
-
-    const char* c_str() const { return data_; }
-    const char* data() const { return data_; }
-
-    char& operator[](std::size_t i) { return data_[i]; }
-
-    const char& operator[](std::size_t i) const { return data_[i]; }
-
-    FixedString& operator+=(const char* str) {
-        size_t len = std::strlen(str);
-        if (length_ + len > Capacity)
-            std::terminate();
-        std::memcpy(data_ + length_, str, len);
-        length_ += len;
-        data_[length_] = '\0';
-        return *this;
-    }
-
-    FixedString& operator+=(const FixedString& other) { return (*this += other.c_str()); }
-
-    operator std::string() const { return std::string(data_, length_); }
-
-    operator std::string_view() const { return std::string_view(data_, length_); }
-
-    template<typename T>
-    bool operator==(const T& other) const noexcept {
-        return (std::string_view) (*this) == other;
-    }
-
-    template<typename T>
-    bool operator!=(const T& other) const noexcept {
-        return (std::string_view) (*this) != other;
-    }
-
-    void clear() {
-        length_  = 0;
-        data_[0] = '\0';
-    }
-
-   private:
-    char        data_[Capacity + 1];  // +1 for null terminator
-    std::size_t length_;
-};
-
 struct CommandLine {
    public:
     CommandLine(int, char**);  //from learning
@@ -309,10 +238,4 @@ class Util {
 //end from learning
 
 }  // namespace ShashChess
-template<std::size_t N>
-struct std::hash<ShashChess::FixedString<N>> {
-    std::size_t operator()(const ShashChess::FixedString<N>& fstr) const noexcept {
-        return ShashChess::hash_bytes(fstr.data(), fstr.size());
-    }
-};
 #endif  // #ifndef MISC_H_INCLUDED

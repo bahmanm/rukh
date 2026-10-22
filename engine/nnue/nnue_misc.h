@@ -23,7 +23,9 @@
 #include <memory>
 #include <string>
 
-#include "../misc.h"
+#include <rukh/support/fixed_string.h>
+#include <rukh/support/hash.h>
+
 #include "../types.h"
 #include "nnue_architecture.h"
 

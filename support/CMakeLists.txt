@@ -81,6 +81,16 @@ install(
 
 if( BUILD_TESTING )
     add_executable(
+        rukh_support_fixed_string_tests
+        tests/fixed_string_tests.cpp )
+    target_link_libraries(
+        rukh_support_fixed_string_tests
+        PRIVATE RukhSupport::RukhSupport )
+    add_test(
+        NAME rukh-support-fixed-string
+        COMMAND rukh_support_fixed_string_tests )
+
+    add_executable(
         rukh_support_multi_array_tests
         tests/multi_array_tests.cpp )
     target_link_libraries(
