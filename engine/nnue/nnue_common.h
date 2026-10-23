@@ -28,6 +28,8 @@
 #include <iostream>
 #include <type_traits>
 
+#include <rukh/support/endian.h>
+
 #include "../misc.h"
 
 #if defined(USE_AVX2)
