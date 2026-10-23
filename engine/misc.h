@@ -67,6 +67,7 @@ void start_logger(const std::string& fname);
 
 #if defined(__linux__)
 
+// TODO unused--remove
 struct PipeDeleter {
     void operator()(FILE* file) const {
         if (file != nullptr)
