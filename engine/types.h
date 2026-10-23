@@ -41,6 +41,7 @@
     #include <cstdint>
 
     #include <type_traits>
+#include <rukh/support/value_list.h>
 //shashchess begin
     #if defined(__GNUC__) && !defined(__clang__)
         #if __GNUC__ >= 13
@@ -58,32 +59,6 @@
         #define sf_assume(cond)
     #endif
 
-// Definizione ValueList spostata qui
-template<typename T, std::size_t MaxSize>
-class ValueList {
-
-   public:
-    std::size_t size() const { return size_; }
-    int         ssize() const { return int(size_); }
-    void        push_back(const T& value) {
-        assert(size_ < MaxSize);
-        values_[size_++] = value;
-    }
-    const T* begin() const { return values_; }
-    const T* end() const { return values_ + size_; }
-    const T& operator[](int index) const { return values_[index]; }
-
-    T* make_space(size_t count) {
-        T* result = &values_[size_];
-        size_ += count;
-        assert(size_ <= MaxSize);
-        return result;
-    }
-
-   private:
-    T           values_[MaxSize];
-    std::size_t size_ = 0;
-};
     //shashchess end
     #if defined(_MSC_VER)
         // Disable some silly and noisy warnings from MSVC compiler
