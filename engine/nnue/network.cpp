@@ -25,6 +25,8 @@
 #include <type_traits>
 #include <vector>
 
+#include <rukh/support/alignment.h>
+
 #define INCBIN_SILENCE_BITCODE_WARNING
 #include "../incbin/incbin.h"
 
@@ -179,7 +181,7 @@ Network<Arch, Transformer>::evaluate(const Position&                         pos
     alignas(alignment)
       TransformedFeatureType transformedFeatures[FeatureTransformer<FTDimensions>::BufferSize];
 
-    ASSERT_ALIGNED(transformedFeatures, alignment);
+    assert_aligned(transformedFeatures, alignment);
 
     const int  bucket = (pos.count<ALL_PIECES>() - 1) / 4;
     const auto psqt =
@@ -241,7 +243,7 @@ Network<Arch, Transformer>::trace_evaluate(const Position&                      
     alignas(alignment)
       TransformedFeatureType transformedFeatures[FeatureTransformer<FTDimensions>::BufferSize];
 
-    ASSERT_ALIGNED(transformedFeatures, alignment);
+    assert_aligned(transformedFeatures, alignment);
 
     NnueEvalTrace t{};
     t.correctBucket = (pos.count<ALL_PIECES>() - 1) / 4;
