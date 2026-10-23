@@ -1183,10 +1183,14 @@ class NumaConfig {
               io::read_file_to_string("/sys/devices/system/cpu/cpu" + std::to_string(next)
                                   + "/cache/index3/shared_cpu_list");
 
-            if (!siblingsStr.has_value() || siblingsStr->empty())
+            if (!siblingsStr.has_value())
             {
                 break;  // we have read all available CPUs
             }
+
+            text::remove_whitespace(*siblingsStr);
+            if (siblingsStr->empty())
+                break;  // we have read all available CPUs
 
             L3Domain domain;
             for (size_t c : indices_from_shortened_string(*siblingsStr))
