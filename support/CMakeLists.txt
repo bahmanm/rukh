@@ -23,6 +23,7 @@ set( CMAKE_CXX_EXTENSIONS OFF )
 add_library(
     rukh_support
     src/file_mapping.cpp
+    src/file_size.cpp
     src/io.cpp
     src/memory.cpp
     src/text.cpp )

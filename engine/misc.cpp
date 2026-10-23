@@ -27,6 +27,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <iterator>
 #include <limits>
@@ -556,17 +557,6 @@ std::string Util::map_path(const std::string& p) {
         p2 = combine_path(cli->binaryDirectory, p);
 
     return p2;
-}
-
-size_t Util::get_file_size(const std::string& f) {
-    if (is_empty_filename(f))
-        return (size_t) -1;
-
-    std::ifstream in(map_path(f), std::ifstream::ate | std::ifstream::binary);
-    if (!in.is_open())
-        return (size_t) -1;
-
-    return (size_t) in.tellg();
 }
 
 bool Util::is_same_file(const std::string& f1, const std::string& f2) {

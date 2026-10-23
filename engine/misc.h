@@ -138,7 +138,6 @@ class Util {
     static std::string combine_path(const std::string& p1, const std::string& p2);
     static std::string map_path(const std::string& p);
 
-    static size_t get_file_size(const std::string& f);
     static bool   is_same_file(const std::string& f1, const std::string& f2);
 
 };
