@@ -42,24 +42,6 @@
 
     #include <type_traits>
 #include <rukh/support/value_list.h>
-//shashchess begin
-    #if defined(__GNUC__) && !defined(__clang__)
-        #if __GNUC__ >= 13
-            #define sf_assume(cond) __attribute__((assume(cond)))
-        #else
-            #define sf_assume(cond) \
-                do \
-                { \
-                    if (!(cond)) \
-                        __builtin_unreachable(); \
-                } while (0)
-        #endif
-    #else
-        // do nothing for other compilers
-        #define sf_assume(cond)
-    #endif
-
-    //shashchess end
     #if defined(_MSC_VER)
         // Disable some silly and noisy warnings from MSVC compiler
         #pragma warning(disable: 4127)  // Conditional expression is constant
@@ -69,18 +51,11 @@
 
 // Predefined macros hell:
 //
-// __GNUC__                Compiler is GCC, Clang or ICX
 // __clang__               Compiler is Clang or ICX
 // __INTEL_LLVM_COMPILER   Compiler is ICX
 // _MSC_VER                Compiler is MSVC
 // _WIN32                  Building on Windows (any)
 // _WIN64                  Building on Windows 64 bit
-
-// Enforce minimum GCC version
-    #if defined(__GNUC__) && !defined(__clang__) \
-      && (__GNUC__ < 9 || (__GNUC__ == 9 && __GNUC_MINOR__ < 3))
-        #error "Stockfish requires GCC 9.3 or later for correct compilation"
-    #endif
 
     // Enforce minimum Clang version
     #if defined(__clang__) && (__clang_major__ < 10)

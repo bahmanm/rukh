@@ -115,15 +115,6 @@ struct CommandLine {
     //from learning end
 };
 
-#if defined(__GNUC__)
-    #define sf_always_inline __attribute__((always_inline))
-#elif defined(_MSC_VER)
-    #define sf_always_inline __forceinline
-#else
-    // do nothing for other compilers
-    #define sf_always_inline
-#endif
-
 //ShashChess omissis: in types.h
 
 //begin from learning
