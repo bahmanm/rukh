@@ -63,11 +63,6 @@ std::string engine_version_info();
 std::string engine_info(bool to_uci = false);
 std::string compiler_info();
 
-// Preloads the given address in L1/L2 cache. This is a non-blocking
-// function that doesn't stall the CPU waiting for data to be loaded from memory,
-// which can be quite slow.
-void prefetch(const void* addr);
-
 void start_logger(const std::string& fname);
 
 #if defined(__linux__)
