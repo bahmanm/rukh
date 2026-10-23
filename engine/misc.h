@@ -125,20 +125,6 @@ struct CommandLine {
     //from learning end
 };
 
-namespace Utility {
-
-template<typename T, typename Predicate>
-void move_to_front(std::vector<T>& vec, Predicate pred) {
-    auto it = std::find_if(vec.begin(), vec.end(), pred);
-
-    if (it != vec.end())
-    {
-        std::rotate(vec.begin(), it, it + 1);
-    }
-}
-}
-
-
 #if defined(__GNUC__)
     #define sf_always_inline __attribute__((always_inline))
 #elif defined(_MSC_VER)
