@@ -10,6 +10,16 @@ namespace ShashChess::text
 {
 
     std::string
+    unquote(std::string_view input)
+    {
+        if (input.size() > 2 && ((input.front() == '"' && input.back() == '"') ||
+                                 (input.front() == '\'' && input.back() == '\'')))
+            input = input.substr(1, input.size() - 2);
+
+        return std::string(input);
+    }
+
+    std::string
     format_printf(
         const char* format,
         ...)

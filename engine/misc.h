@@ -133,7 +133,6 @@ class Util {
 
    public:
     static void        init(CommandLine* _cli);
-    static std::string unquote(const std::string& s);
     static bool        is_empty_filename(const std::string& f);
     static std::string fix_path(const std::string& p);
     static std::string combine_path(const std::string& p1, const std::string& p2);

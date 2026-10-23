@@ -16,6 +16,9 @@ namespace ShashChess::text
 {
 
     std::string
+    unquote(std::string_view input);
+
+    std::string
     format_printf(
         const char* format,
         ...);

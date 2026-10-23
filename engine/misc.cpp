@@ -18,6 +18,8 @@
 
 #include "misc.h"
 
+#include <rukh/support/text.h>
+
 #include <array>
 #include <atomic>
 #include <cassert>
@@ -508,20 +510,6 @@ std::string CommandLine::get_working_directory() {
 //Book management and learning begin
 CommandLine* Util::cli = nullptr;
 void         Util::init(CommandLine* _cli) { cli = _cli; }
-std::string  Util::unquote(const std::string& s) {
-    std::string s1 = s;
-
-    if (s1.size() > 2)
-    {
-        if ((s1.front() == '\"' && s1.back() == '\"') || (s1.front() == '\'' && s1.back() == '\''))
-        {
-            s1 = s1.substr(1, s1.size() - 2);
-        }
-    }
-
-    return s1;
-}
-
 bool Util::is_empty_filename(const std::string& fn) {
     if (fn.empty())
         return true;
@@ -535,7 +523,7 @@ std::string Util::fix_path(const std::string& p) {
     if (is_empty_filename(p))
         return p;
 
-    std::string p1 = unquote(p);
+    std::string p1 = text::unquote(p);
     std::replace(p1.begin(), p1.end(), ReverseDirectorySeparator, DirectorySeparator);
 
     return p1;
