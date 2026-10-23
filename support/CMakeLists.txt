@@ -22,8 +22,10 @@ set( CMAKE_CXX_EXTENSIONS OFF )
 
 add_library(
     rukh_support
+    src/file_mapping.cpp
     src/io.cpp
-    src/memory.cpp )
+    src/memory.cpp
+    src/text.cpp )
 if( CMAKE_SYSTEM_NAME STREQUAL "Linux" AND NOT ANDROID )
     target_sources(
         rukh_support
@@ -64,21 +66,21 @@ install(
     EXPORT RukhSupportTargets
     NAMESPACE RukhSupport::
     FILE RukhSupportTargets.cmake
-    DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/RukhSupport" )
+    DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/rukh_support" )
 
 configure_package_config_file(
     cmake/RukhSupportConfig.cmake.in
-    "${CMAKE_CURRENT_BINARY_DIR}/RukhSupportConfig.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/rukh_supportConfig.cmake"
     INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/RukhSupport" )
 write_basic_package_version_file(
-    "${CMAKE_CURRENT_BINARY_DIR}/RukhSupportConfigVersion.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/rukh_supportConfigVersion.cmake"
     VERSION "${PROJECT_VERSION}"
     COMPATIBILITY SameMajorVersion )
 install(
     FILES
-        "${CMAKE_CURRENT_BINARY_DIR}/RukhSupportConfig.cmake"
-        "${CMAKE_CURRENT_BINARY_DIR}/RukhSupportConfigVersion.cmake"
-    DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/RukhSupport" )
+        "${CMAKE_CURRENT_BINARY_DIR}/rukh_supportConfig.cmake"
+        "${CMAKE_CURRENT_BINARY_DIR}/rukh_supportConfigVersion.cmake"
+    DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/rukh_support" )
 
 if( BUILD_TESTING )
     add_executable(

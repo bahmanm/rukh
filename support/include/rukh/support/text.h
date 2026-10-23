@@ -5,6 +5,7 @@
 #include <cctype>
 #include <charconv>
 #include <cstddef>
+#include <cstdint>
 #include <stdexcept>
 #include <string>
 #include <string_view>
@@ -13,6 +14,16 @@
 
 namespace ShashChess::text
 {
+
+    std::string
+    format_printf(
+        const char* format,
+        ...);
+
+    std::string
+    format_bytes(
+        std::uint64_t bytes,
+        int           decimals);
 
     inline std::vector<std::string_view>
     split(

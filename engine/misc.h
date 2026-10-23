@@ -175,9 +175,6 @@ class Util {
     static size_t get_file_size(const std::string& f);
     static bool   is_same_file(const std::string& f1, const std::string& f2);
 
-    static std::string format_bytes(uint64_t bytes, int decimals);
-
-    static std::string format_string(const char* const fmt, ...);
 };
 //end from learning
 

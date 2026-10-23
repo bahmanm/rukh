@@ -5,7 +5,8 @@
 #include "../../position.h"
 #include "../../uci.h"
 #include <rukh/support/clock.h>
-#include "../file_mapping.h"
+#include <rukh/support/file_mapping.h>
+#include <rukh/support/text.h>
 #include "polyglot.h"
 
 namespace ShashChess {
@@ -411,7 +412,7 @@ bool PolyglotBook::open(const std::string& f) {
         return true;
 
     FileMapping fm;
-    if (!fm.map(Util::map_path(f), false))
+    if (!fm.map(Util::map_path(f)))
     {
         sync_cout << "info string Could not open book file: " << f << sync_endl;
         return false;
@@ -420,7 +421,7 @@ bool PolyglotBook::open(const std::string& f) {
     void* inData = malloc(fm.data_size());
     if (!inData)
     {
-        sync_cout << "info string Could not allocate " << Util::format_bytes(fm.data_size(), 2)
+        sync_cout << "info string Could not allocate " << text::format_bytes(fm.data_size(), 2)
                   << " of memory for reading book file: " << f << sync_endl;
         return false;
     }

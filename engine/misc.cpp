@@ -25,7 +25,6 @@
 #include <cmath>
 #include <cstdlib>
 #include <fstream>
-#include <iomanip>
 #include <iostream>
 #include <iterator>
 #include <limits>
@@ -34,7 +33,6 @@
 //not used string_view: improved from Stockfish
 //from ShashChess begin
 #include <algorithm>
-#include <stdarg.h>
 //from ShashChess end
 
 #include "types.h"
@@ -604,49 +602,6 @@ bool Util::is_same_file(const std::string& f1, const std::string& f2) {
     return map_path(f1) == map_path(f2);
 }
 
-std::string Util::format_bytes(uint64_t bytes, int decimals) {
-    static const uint64_t KB = 1024;
-    static const uint64_t MB = KB * 1024;
-    static const uint64_t GB = MB * 1024;
-    static const uint64_t TB = GB * 1024;
-
-    std::stringstream ss;
-
-    if (bytes < KB)
-        ss << bytes << " B";
-    else if (bytes < MB)
-        ss << std::fixed << std::setprecision(decimals) << (double(bytes) / KB) << "KB";
-    else if (bytes < GB)
-        ss << std::fixed << std::setprecision(decimals) << (double(bytes) / MB) << "MB";
-    else if (bytes < TB)
-        ss << std::fixed << std::setprecision(decimals) << (double(bytes) / GB) << "GB";
-    else
-        ss << std::fixed << std::setprecision(decimals) << (double(bytes) / TB) << "TB";
-
-    return ss.str();
-}
-
-//Code is an `edited` version of: https://stackoverflow.com/a/49812018
-std::string Util::format_string(const char* const fmt, ...) {
-    //Initialize use of the variable arguments
-    va_list vaArgs;
-    va_start(vaArgs, fmt);
-
-    //Acquire the required string size
-    va_start(vaArgs, fmt);
-    int len = vsnprintf(nullptr, 0, fmt, vaArgs);
-    va_end(vaArgs);
-
-
-    //Allocate enough buffer and format
-    std::vector<char> v(len + 1);
-
-    va_start(vaArgs, fmt);
-    vsnprintf(v.data(), v.size(), fmt, vaArgs);
-    va_end(vaArgs);
-
-    return std::string(v.data(), len);
-}
 //Book management and learning end
 
 

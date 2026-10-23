@@ -15,7 +15,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 find_package(Threads REQUIRED)
 find_package(CURL REQUIRED)
-find_package(RukhSupport CONFIG REQUIRED)
+find_package(rukh_support CONFIG REQUIRED)
 
 set(RUKH_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 
@@ -25,7 +25,6 @@ set(RUKH_SOURCES
     book/book.cpp
     book/book_manager.cpp
     book/ctg/ctg.cpp
-    book/file_mapping.cpp
     book/polyglot/polyglot.cpp
     engine.cpp
     evaluate.cpp

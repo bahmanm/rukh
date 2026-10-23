@@ -39,6 +39,7 @@
 #include "position.h"
 #include "search.h"
 #include <rukh/support/shared_memory.h>
+#include <rukh/support/text.h>
 #include "syzygy/tbprobe.h"
 #include "types.h"
 #include "uci.h"
@@ -127,17 +128,17 @@ Engine::Engine(std::optional<std::string> path) :
     // Book management
     for (int i = 0; i < BookManager::NumberOfBooks; ++i)
     {
-        options.add(Util::format_string("CTG/BIN Book %d File", i + 1),
+        options.add(text::format_printf("CTG/BIN Book %d File", i + 1),
                     Option(EMPTY, [this, i](const Option&) {
                         init_bookMan(i);
                         return std::nullopt;
                     }));
 
-        options.add(Util::format_string("Book %d Width", i + 1), Option(1, 1, 20));
+        options.add(text::format_printf("Book %d Width", i + 1), Option(1, 1, 20));
 
-        options.add(Util::format_string("Book %d Depth", i + 1), Option(255, 1, 255));
+        options.add(text::format_printf("Book %d Depth", i + 1), Option(255, 1, 255));
 
-        options.add(Util::format_string("(CTG) Book %d Only Green", i + 1), Option(true));
+        options.add(text::format_printf("(CTG) Book %d Only Green", i + 1), Option(true));
     }
 
     options.add(  //
