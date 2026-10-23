@@ -28,11 +28,11 @@
 #include <mutex>
 #include <vector>
 
-#include "memory.h"
+#include <rukh/support/memory.h>
+#include <rukh/support/native_thread.h>
 #include "numa.h"
 #include "position.h"
 #include "search.h"
-#include "thread_win32_osx.h"
 
 namespace ShashChess {
 

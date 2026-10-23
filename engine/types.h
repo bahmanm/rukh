@@ -41,50 +41,7 @@
     #include <cstdint>
 
     #include <type_traits>
-//shashchess begin
-    #if defined(__GNUC__) && !defined(__clang__)
-        #if __GNUC__ >= 13
-            #define sf_assume(cond) __attribute__((assume(cond)))
-        #else
-            #define sf_assume(cond) \
-                do \
-                { \
-                    if (!(cond)) \
-                        __builtin_unreachable(); \
-                } while (0)
-        #endif
-    #else
-        // do nothing for other compilers
-        #define sf_assume(cond)
-    #endif
-
-// Definizione ValueList spostata qui
-template<typename T, std::size_t MaxSize>
-class ValueList {
-
-   public:
-    std::size_t size() const { return size_; }
-    int         ssize() const { return int(size_); }
-    void        push_back(const T& value) {
-        assert(size_ < MaxSize);
-        values_[size_++] = value;
-    }
-    const T* begin() const { return values_; }
-    const T* end() const { return values_ + size_; }
-    const T& operator[](int index) const { return values_[index]; }
-
-    T* make_space(size_t count) {
-        T* result = &values_[size_];
-        size_ += count;
-        assert(size_ <= MaxSize);
-        return result;
-    }
-
-   private:
-    T           values_[MaxSize];
-    std::size_t size_ = 0;
-};
-    //shashchess end
+#include <rukh/support/value_list.h>
     #if defined(_MSC_VER)
         // Disable some silly and noisy warnings from MSVC compiler
         #pragma warning(disable: 4127)  // Conditional expression is constant
@@ -94,25 +51,16 @@ class ValueList {
 
 // Predefined macros hell:
 //
-// __GNUC__                Compiler is GCC, Clang or ICX
 // __clang__               Compiler is Clang or ICX
 // __INTEL_LLVM_COMPILER   Compiler is ICX
 // _MSC_VER                Compiler is MSVC
 // _WIN32                  Building on Windows (any)
 // _WIN64                  Building on Windows 64 bit
 
-// Enforce minimum GCC version
-    #if defined(__GNUC__) && !defined(__clang__) \
-      && (__GNUC__ < 9 || (__GNUC__ == 9 && __GNUC_MINOR__ < 3))
-        #error "Stockfish requires GCC 9.3 or later for correct compilation"
-    #endif
-
     // Enforce minimum Clang version
     #if defined(__clang__) && (__clang_major__ < 10)
         #error "Stockfish requires Clang 10.0 or later for correct compilation"
     #endif
-
-    #define ASSERT_ALIGNED(ptr, alignment) assert(reinterpret_cast<uintptr_t>(ptr) % alignment == 0)
 
     #if defined(_WIN64) && defined(_MSC_VER)  // No Makefile used
         #include <intrin.h>                   // Microsoft header for _BitScanForward64()
@@ -517,6 +465,7 @@ class Move {
     std::uint16_t data;
 };
 
+// TODO unused--remove
 template<typename T, typename... Ts>
 struct is_all_same {
     static constexpr bool value = (std::is_same_v<T, Ts> && ...);

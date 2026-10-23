@@ -29,7 +29,8 @@
 #include <limits>
 #include <type_traits>  // IWYU pragma: keep
 
-#include "memory.h"
+#include <rukh/support/memory.h>
+#include <rukh/support/multi_array.h>
 #include "misc.h"
 #include "position.h"
 

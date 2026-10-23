@@ -24,7 +24,7 @@
 #include <cstring>
 #include <iostream>
 
-#include "memory.h"
+#include <rukh/support/memory.h>
 #include "misc.h"
 #include "syzygy/tbprobe.h"
 #include "thread.h"

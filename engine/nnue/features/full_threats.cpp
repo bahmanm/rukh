@@ -25,6 +25,8 @@
 #include <initializer_list>
 #include <utility>
 
+#include <rukh/support/compiler.h>
+
 #include "../../bitboard.h"
 #include "../../misc.h"
 #include "../../position.h"
@@ -188,7 +190,7 @@ constexpr auto index_lut1 = init_index_luts();
 constexpr auto index_lut2 = index_lut2_array();
 
 // Index of a feature for a given king position and another piece on some square
-inline sf_always_inline IndexType FullThreats::make_index(
+inline RUKH_SUPPORT_ALWAYS_INLINE IndexType FullThreats::make_index(
   Color perspective, Piece attacker, Square from, Square to, Piece attacked, Square ksq) {
     const std::int8_t orientation   = OrientTBL[ksq] ^ (56 * perspective);
     unsigned          from_oriented = uint8_t(from) ^ orientation;

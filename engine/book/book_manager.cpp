@@ -2,6 +2,7 @@
 #include "polyglot/polyglot.h"
 #include "ctg/ctg.h"
 #include "book_manager.h"
+#include <rukh/support/text.h>
 
 namespace ShashChess {
 BookManager::BookManager() {
@@ -27,7 +28,7 @@ void BookManager::init(int index, const OptionsMap& options) {
     books[index] = nullptr;
 
     std::string filename =
-      std::string(options[Util::format_string("CTG/BIN Book %d File", index + 1)]);
+      std::string(options[text::format_printf("CTG/BIN Book %d File", index + 1)]);
 
     //Load new book
     if (Util::is_empty_filename(filename))
@@ -59,11 +60,11 @@ Move BookManager::probe(const Position& pos, const OptionsMap& options) const {
     for (size_t i = 0; i < NumberOfBooks; ++i)
     {
         if (books[i] != nullptr
-            && int(options[Util::format_string("Book %d Depth", i + 1)]) >= moveNumber)
+            && int(options[text::format_printf("Book %d Depth", i + 1)]) >= moveNumber)
         {
             bookMove = books[i]->probe(
-              pos, size_t(int(options[Util::format_string("Book %d Width", i + 1)])),
-              bool(options[Util::format_string("(CTG) Book %d Only Green", i + 1)]));
+              pos, size_t(int(options[text::format_printf("Book %d Width", i + 1)])),
+              bool(options[text::format_printf("(CTG) Book %d Only Green", i + 1)]));
             if (bookMove != Move::none())
                 break;
         }
@@ -84,7 +85,7 @@ void BookManager::show_moves(const Position& pos, const OptionsMap& options) con
         else
         {
             std::cout << "Book " << i + 1 << " (" << books[i]->type() << "): "
-                      << std::string(options[Util::format_string("CTG/BIN Book %d File", i + 1)])
+                      << std::string(options[text::format_printf("CTG/BIN Book %d File", i + 1)])
                       << std::endl;
             books[i]->show_moves(pos);
         }

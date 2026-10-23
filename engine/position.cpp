@@ -34,6 +34,7 @@
 #include "bitboard.h"
 #include "history.h"
 #include "misc.h"
+#include <rukh/support/prefetch.h>
 //shashin
 #include "syzygy/tbprobe.h"
 #include "tt.h"

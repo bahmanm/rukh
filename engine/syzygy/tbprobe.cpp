@@ -37,6 +37,8 @@
 #include <vector>
 #include <array>
 
+#include <rukh/support/endian.h>
+
 #include "../bitboard.h"
 #include "../misc.h"
 #include "../movegen.h"

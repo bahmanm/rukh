@@ -23,18 +23,21 @@ $(RUKH_BMAKELIB) :
 export RUKH_BMAKELIB
 
 $(call bmakelib.enum.define,RUKH_PROFILE/debug,release)
-ifeq ($(filter rukh.install rukh.engine.install,$(MAKECMDGOALS)),)
+ifeq ($(filter rukh.install rukh.engine.install rukh.support.install,$(MAKECMDGOALS)),)
 RUKH_PROFILE ?= debug
 else
 RUKH_PROFILE ?= release
 endif
 $(call bmakelib.enum.error-unless-member,RUKH_PROFILE,RUKH_PROFILE)
 
+RUKH_SUPPORT_BUILD_DIR ?= $(RUKH_BUILD_ROOT)support/$(RUKH_PROFILE)/
+RUKH_SUPPORT_INSTALL_DIR ?= $(RUKH_BUILD_ROOT)install/support/$(RUKH_PROFILE)/
 RUKH_ENGINE_BUILD_DIR ?= $(RUKH_BUILD_ROOT)engine/$(RUKH_PROFILE)/
 RUKH_ENGINE_INSTALL_DIR ?= $(RUKH_BUILD_ROOT)install/engine/$(RUKH_PROFILE)/
 
 RUKH_CMAKE ?= cmake
 RUKH_CTEST ?= ctest
+RUKH_CLANG_FORMAT ?= clang-format
 RUKH_CMAKE_BUILD_ARGS ?=
 RUKH_CMAKE_CONFIGURE_ARGS ?=
 RUKH_CMAKE_GENERATOR ?=

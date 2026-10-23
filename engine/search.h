@@ -32,6 +32,8 @@
 #include <string_view>
 #include <vector>
 
+#include <rukh/support/clock.h>
+
 #include "history.h"
 #include "misc.h"
 #include "nnue/network.h"

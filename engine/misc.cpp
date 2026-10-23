@@ -18,6 +18,8 @@
 
 #include "misc.h"
 
+#include <rukh/support/text.h>
+
 #include <array>
 #include <atomic>
 #include <cassert>
@@ -34,7 +36,6 @@
 //not used string_view: improved from Stockfish
 //from ShashChess begin
 #include <algorithm>
-#include <stdarg.h>
 //from ShashChess end
 
 #include "types.h"
@@ -440,23 +441,6 @@ void sync_cout_end() { std::cout << IO_UNLOCK; }
 void start_logger(const std::string& fname) { Logger::start(fname); }
 
 
-#ifdef NO_PREFETCH
-
-void prefetch(const void*) {}
-
-#else
-
-void prefetch(const void* addr) {
-
-    #if defined(_MSC_VER)
-    _mm_prefetch((char const*) addr, _MM_HINT_T0);
-    #else
-    __builtin_prefetch(addr);
-    #endif
-}
-
-#endif
-
 #ifdef _WIN32
     #include <direct.h>
     #define GETCWD _getcwd
@@ -464,28 +448,6 @@ void prefetch(const void* addr) {
     #include <unistd.h>
     #define GETCWD getcwd
 #endif
-
-size_t str_to_size_t(const std::string& s) {
-    unsigned long long value = std::stoull(s);
-    if (value > std::numeric_limits<size_t>::max())
-        std::exit(EXIT_FAILURE);
-    return static_cast<size_t>(value);
-}
-
-std::optional<std::string> read_file_to_string(const std::string& path) {
-    std::ifstream f(path, std::ios_base::binary);
-    if (!f)
-        return std::nullopt;
-    return std::string(std::istreambuf_iterator<char>(f), std::istreambuf_iterator<char>());
-}
-
-void remove_whitespace(std::string& s) {
-    s.erase(std::remove_if(s.begin(), s.end(), [](char c) { return std::isspace(c); }), s.end());
-}
-
-bool is_whitespace(std::string_view s) {
-    return std::all_of(s.begin(), s.end(), [](char c) { return std::isspace(c); });
-}
 
 //from learning begin
 CommandLine::CommandLine(int _argc, char** _argv) :
@@ -549,20 +511,6 @@ std::string CommandLine::get_working_directory() {
 //Book management and learning begin
 CommandLine* Util::cli = nullptr;
 void         Util::init(CommandLine* _cli) { cli = _cli; }
-std::string  Util::unquote(const std::string& s) {
-    std::string s1 = s;
-
-    if (s1.size() > 2)
-    {
-        if ((s1.front() == '\"' && s1.back() == '\"') || (s1.front() == '\'' && s1.back() == '\''))
-        {
-            s1 = s1.substr(1, s1.size() - 2);
-        }
-    }
-
-    return s1;
-}
-
 bool Util::is_empty_filename(const std::string& fn) {
     if (fn.empty())
         return true;
@@ -576,7 +524,7 @@ std::string Util::fix_path(const std::string& p) {
     if (is_empty_filename(p))
         return p;
 
-    std::string p1 = unquote(p);
+    std::string p1 = text::unquote(p);
     std::replace(p1.begin(), p1.end(), ReverseDirectorySeparator, DirectorySeparator);
 
     return p1;
@@ -611,64 +559,10 @@ std::string Util::map_path(const std::string& p) {
     return p2;
 }
 
-size_t Util::get_file_size(const std::string& f) {
-    if (is_empty_filename(f))
-        return (size_t) -1;
-
-    std::ifstream in(map_path(f), std::ifstream::ate | std::ifstream::binary);
-    if (!in.is_open())
-        return (size_t) -1;
-
-    return (size_t) in.tellg();
-}
-
 bool Util::is_same_file(const std::string& f1, const std::string& f2) {
     return map_path(f1) == map_path(f2);
 }
 
-std::string Util::format_bytes(uint64_t bytes, int decimals) {
-    static const uint64_t KB = 1024;
-    static const uint64_t MB = KB * 1024;
-    static const uint64_t GB = MB * 1024;
-    static const uint64_t TB = GB * 1024;
-
-    std::stringstream ss;
-
-    if (bytes < KB)
-        ss << bytes << " B";
-    else if (bytes < MB)
-        ss << std::fixed << std::setprecision(decimals) << (double(bytes) / KB) << "KB";
-    else if (bytes < GB)
-        ss << std::fixed << std::setprecision(decimals) << (double(bytes) / MB) << "MB";
-    else if (bytes < TB)
-        ss << std::fixed << std::setprecision(decimals) << (double(bytes) / GB) << "GB";
-    else
-        ss << std::fixed << std::setprecision(decimals) << (double(bytes) / TB) << "TB";
-
-    return ss.str();
-}
-
-//Code is an `edited` version of: https://stackoverflow.com/a/49812018
-std::string Util::format_string(const char* const fmt, ...) {
-    //Initialize use of the variable arguments
-    va_list vaArgs;
-    va_start(vaArgs, fmt);
-
-    //Acquire the required string size
-    va_start(vaArgs, fmt);
-    int len = vsnprintf(nullptr, 0, fmt, vaArgs);
-    va_end(vaArgs);
-
-
-    //Allocate enough buffer and format
-    std::vector<char> v(len + 1);
-
-    va_start(vaArgs, fmt);
-    vsnprintf(v.data(), v.size(), fmt, vaArgs);
-    va_end(vaArgs);
-
-    return std::string(v.data(), len);
-}
 //Book management and learning end
 
 

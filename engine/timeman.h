@@ -21,6 +21,8 @@
 
 #include <cstdint>
 
+#include <rukh/support/clock.h>
+
 #include "misc.h"
 
 namespace ShashChess {

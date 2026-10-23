@@ -5,6 +5,7 @@
 #include <iomanip>
 #include "../../position.h"
 #include "../../uci.h"
+#include <rukh/support/clock.h>
 #include "ctg.h"
 
 namespace ShashChess {
@@ -978,7 +979,7 @@ bool CtgBook::open(const std::string& f) {
     //CTG
     std::string fn      = Util::map_path(f);
     std::string ctgFile = fn.substr(0, fn.find_last_of('.')) + ".ctg";
-    if (!ctg.map(ctgFile.c_str(), true))
+    if (!ctg.map(ctgFile))
     {
         close();
 
@@ -988,7 +989,7 @@ bool CtgBook::open(const std::string& f) {
 
     //CTO
     std::string ctoFile = ctgFile.substr(0, ctgFile.find_last_of('.')) + ".cto";
-    if (!cto.map(ctoFile.c_str(), true))
+    if (!cto.map(ctoFile))
     {
         close();
 
@@ -999,7 +1000,7 @@ bool CtgBook::open(const std::string& f) {
     //CTB
     std::string ctbFile = ctgFile.substr(0, ctgFile.find_last_of('.')) + ".ctb";
     FileMapping ctb;
-    if (!ctb.map(ctbFile.c_str(), true))
+    if (!ctb.map(ctbFile))
     {
         close();
 

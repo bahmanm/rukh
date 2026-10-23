@@ -17,6 +17,7 @@
 */
 
 #include "bitboard.h"
+#include <rukh/support/prng.h>
 
 #include <algorithm>
 #include <bitset>

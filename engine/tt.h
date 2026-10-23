@@ -23,7 +23,7 @@
 #include <cstdint>
 #include <tuple>
 
-#include "memory.h"
+#include <rukh/support/memory.h>
 #include "types.h"
 
 namespace ShashChess {

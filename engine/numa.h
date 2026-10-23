@@ -37,7 +37,9 @@
 #include <vector>
 #include <cstring>
 
-#include "shm.h"
+#include <rukh/support/shared_memory.h>
+#include <rukh/support/text.h>
+#include <rukh/support/io.h>
 
 // We support linux very well, but we explicitly do NOT support Android,
 // because there is no affected systems, not worth maintaining.
@@ -73,6 +75,8 @@ using GetThreadSelectedCpuSetMasks_t = BOOL (*)(HANDLE, PGROUP_AFFINITY, USHORT,
 
 #endif
 
+#include <rukh/support/hash.h>
+#include <rukh/support/memory.h>
 #include "misc.h"
 
 namespace ShashChess {
@@ -667,7 +671,7 @@ class NumaConfig {
         NumaConfig cfg = empty();
 
         NumaIndex n = 0;
-        for (auto&& nodeStr : split(s, ":"))
+        for (auto&& nodeStr : text::split(s, ":"))
         {
             auto indices = indices_from_shortened_string(std::string(nodeStr));
             if (!indices.empty())
@@ -1032,21 +1036,21 @@ class NumaConfig {
         if (s.empty())
             return indices;
 
-        for (const auto& ss : split(s, ","))
+        for (const auto& ss : text::split(s, ","))
         {
             if (ss.empty())
                 continue;
 
-            auto parts = split(ss, "-");
+            auto parts = text::split(ss, "-");
             if (parts.size() == 1)
             {
-                const CpuIndex c = CpuIndex{str_to_size_t(std::string(parts[0]))};
+                const CpuIndex c = CpuIndex{text::parse_size_t(parts[0])};
                 indices.emplace_back(c);
             }
             else if (parts.size() == 2)
             {
-                const CpuIndex cfirst = CpuIndex{str_to_size_t(std::string(parts[0]))};
-                const CpuIndex clast  = CpuIndex{str_to_size_t(std::string(parts[1]))};
+                const CpuIndex cfirst = CpuIndex{text::parse_size_t(parts[0])};
+                const CpuIndex clast  = CpuIndex{text::parse_size_t(parts[1])};
                 for (size_t c = cfirst; c <= clast; ++c)
                 {
                     indices.emplace_back(c);
@@ -1080,20 +1084,20 @@ class NumaConfig {
         };
 
         // /sys/devices/system/node/online contains information about active NUMA nodes
-        auto nodeIdsStr = read_file_to_string("/sys/devices/system/node/online");
+        auto nodeIdsStr = io::read_file_to_string("/sys/devices/system/node/online");
         if (!nodeIdsStr.has_value() || nodeIdsStr->empty())
         {
             fallback();
         }
         else
         {
-            remove_whitespace(*nodeIdsStr);
+            text::remove_whitespace(*nodeIdsStr);
             for (size_t n : indices_from_shortened_string(*nodeIdsStr))
             {
                 // /sys/devices/system/node/node.../cpulist
                 std::string path =
                   std::string("/sys/devices/system/node/node") + std::to_string(n) + "/cpulist";
-                auto cpuIdsStr = read_file_to_string(path);
+                auto cpuIdsStr = io::read_file_to_string(path);
                 // Now, we only bail if the file does not exist. Some nodes may be
                 // empty, that's fine. An empty node still has a file that appears
                 // to have some whitespace, so we need to handle that.
@@ -1104,7 +1108,7 @@ class NumaConfig {
                 }
                 else
                 {
-                    remove_whitespace(*cpuIdsStr);
+                    text::remove_whitespace(*cpuIdsStr);
                     for (size_t c : indices_from_shortened_string(*cpuIdsStr))
                     {
                         if (is_cpu_allowed(c))
@@ -1176,13 +1180,17 @@ class NumaConfig {
         {
             CpuIndex next = nextUnseenCpu();
             auto     siblingsStr =
-              read_file_to_string("/sys/devices/system/cpu/cpu" + std::to_string(next)
+              io::read_file_to_string("/sys/devices/system/cpu/cpu" + std::to_string(next)
                                   + "/cache/index3/shared_cpu_list");
 
-            if (!siblingsStr.has_value() || siblingsStr->empty())
+            if (!siblingsStr.has_value())
             {
                 break;  // we have read all available CPUs
             }
+
+            text::remove_whitespace(*siblingsStr);
+            if (siblingsStr->empty())
+                break;  // we have read all available CPUs
 
             L3Domain domain;
             for (size_t c : indices_from_shortened_string(*siblingsStr))

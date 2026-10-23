@@ -24,6 +24,9 @@ MCTS: Intelligently activate or avoid it.
 Local assessments: Penalize or reward based on king's security, tactical complexity, etc.
 */
 #include "search.h"
+#include <rukh/support/algorithm.h>
+#include <rukh/support/clock.h>
+#include <rukh/support/prng.h>
 //variety begin
 #include <random>
 #include <chrono>
@@ -1009,7 +1012,7 @@ void Search::Worker::iterative_deepening() {
             && is_loss(rootMoves[0].score))
         {
             // Bring the last best move to the front for best thread selection.
-            Utility::move_to_front(rootMoves, [&lastBestPV = std::as_const(lastBestPV)](
+            utility::move_to_front(rootMoves, [&lastBestPV = std::as_const(lastBestPV)](
                                                 const auto& rm) { return rm == lastBestPV[0]; });
             rootMoves[0].pv    = lastBestPV;
             rootMoves[0].score = rootMoves[0].uciScore = lastBestScore;

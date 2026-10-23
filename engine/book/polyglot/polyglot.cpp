@@ -4,7 +4,10 @@
 #include <random>
 #include "../../position.h"
 #include "../../uci.h"
-#include "../file_mapping.h"
+#include <rukh/support/clock.h>
+#include <rukh/support/file_size.h>
+#include <rukh/support/file_mapping.h>
+#include <rukh/support/text.h>
 #include "polyglot.h"
 
 namespace ShashChess {
@@ -399,8 +402,12 @@ void PolyglotBook::close() {
 
 bool PolyglotBook::open(const std::string& f) {
     //If same file and same size -> nothing to do
-    if (Util::is_same_file(f, filename) && Util::get_file_size(f) == bookDataLength)
-        return true;
+    if (Util::is_same_file(f, filename))
+    {
+        const auto fileSize = file::size(Util::map_path(f));
+        if (fileSize && *fileSize == bookDataLength)
+            return true;
+    }
 
     //Close current file
     close();
@@ -410,7 +417,7 @@ bool PolyglotBook::open(const std::string& f) {
         return true;
 
     FileMapping fm;
-    if (!fm.map(Util::map_path(f), false))
+    if (!fm.map(Util::map_path(f)))
     {
         sync_cout << "info string Could not open book file: " << f << sync_endl;
         return false;
@@ -419,7 +426,7 @@ bool PolyglotBook::open(const std::string& f) {
     void* inData = malloc(fm.data_size());
     if (!inData)
     {
-        sync_cout << "info string Could not allocate " << Util::format_bytes(fm.data_size(), 2)
+        sync_cout << "info string Could not allocate " << text::format_bytes(fm.data_size(), 2)
                   << " of memory for reading book file: " << f << sync_endl;
         return false;
     }

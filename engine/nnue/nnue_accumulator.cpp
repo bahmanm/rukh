@@ -23,6 +23,8 @@
 #include <new>
 #include <type_traits>
 
+#include <rukh/support/compiler.h>
+
 #include "../bitboard.h"
 #include "../misc.h"
 #include "../position.h"
@@ -513,8 +515,8 @@ void double_inc_update(Color                                                   p
     // Workaround compiler warning for uninitialized variables, replicated on
     // profile builds on windows with gcc 14.2.0.
     // TODO remove once unneeded
-    sf_assume(added.size() == 1);
-    sf_assume(removed.size() == 2 || removed.size() == 3);
+    RUKH_SUPPORT_ASSUME(added.size() == 1);
+    RUKH_SUPPORT_ASSUME(removed.size() == 2 || removed.size() == 3);
 
     auto updateContext =
       make_accumulator_update_context(perspective, featureTransformer, computed, target_state);
@@ -601,8 +603,8 @@ void update_accumulator_incremental(
         // Workaround compiler warning for uninitialized variables, replicated
         // on profile builds on windows with gcc 14.2.0.
         // TODO remove once unneeded
-        sf_assume(added.size() == 1 || added.size() == 2);
-        sf_assume(removed.size() == 1 || removed.size() == 2);
+        RUKH_SUPPORT_ASSUME(added.size() == 1 || added.size() == 2);
+        RUKH_SUPPORT_ASSUME(removed.size() == 1 || removed.size() == 2);
 
         if ((Forward && removed.size() == 1) || (!Forward && added.size() == 1))
         {

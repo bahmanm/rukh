@@ -1,7 +1,7 @@
 #ifndef CTG_BOOK_H_INCLUDED
 #define CTG_BOOK_H_INCLUDED
 
-#include "../file_mapping.h"
+#include <rukh/support/file_mapping.h>
 #include "../book.h"
 
 namespace ShashChess {
