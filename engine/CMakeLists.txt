@@ -86,6 +86,38 @@ endif()
 install(TARGETS rukh RUNTIME DESTINATION bin)
 
 if(BUILD_TESTING)
+    add_executable(
+        rukh_wdl_baseline_tests
+        wdl/win_probability.cpp
+        ../tests/wdl_baseline_tests.cpp )
+    target_include_directories(
+        rukh_wdl_baseline_tests
+        PRIVATE "${RUKH_SOURCE_DIR}" )
+    target_link_libraries(
+        rukh_wdl_baseline_tests
+        PRIVATE RukhSupport::RukhSupport )
+    target_compile_options(
+        rukh_wdl_baseline_tests
+        PRIVATE
+            $<$<CXX_COMPILER_ID:Clang,GNU>:-ffunction-sections;-fdata-sections>
+            $<$<CXX_COMPILER_ID:MSVC>:/Gy> )
+    if( APPLE )
+        target_link_options(
+            rukh_wdl_baseline_tests
+            PRIVATE "-Wl,-dead_strip" )
+    elseif( UNIX )
+        target_link_options(
+            rukh_wdl_baseline_tests
+            PRIVATE "-Wl,--gc-sections" )
+    elseif( MSVC )
+        target_link_options(
+            rukh_wdl_baseline_tests
+            PRIVATE "/OPT:REF" )
+    endif()
+    add_test(
+        NAME rukh-wdl-baseline
+        COMMAND rukh_wdl_baseline_tests )
+
     find_program(UV_EXECUTABLE uv REQUIRED)
     add_test(
         NAME rukh-smoke-mate-puzzles
