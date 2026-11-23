@@ -7,9 +7,13 @@
 namespace ShashChess::utility
 {
 
-    template <typename T, typename Predicate>
+    template <
+        typename T,
+        typename Predicate>
     void
-    move_to_front(std::vector<T>& values, Predicate predicate)
+    move_to_front(
+        std::vector<T>& values,
+        Predicate       predicate)
     {
         const auto it = std::find_if(values.begin(), values.end(), predicate);
         if (it != values.end())

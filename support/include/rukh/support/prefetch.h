@@ -12,7 +12,7 @@ namespace ShashChess
     prefetch(const void* address)
     {
 #ifdef NO_PREFETCH
-        (void) address;
+        (void)address;
 #elif defined(_MSC_VER)
         _mm_prefetch(static_cast<const char*>(address), _MM_HINT_T0);
 #else
