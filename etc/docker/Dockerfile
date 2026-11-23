@@ -29,6 +29,7 @@ COPY Makefile ./
 COPY etc/make/ ./etc/make/
 COPY etc/cmake/ ./etc/cmake/
 COPY support/ ./support/
+COPY wdl/ ./wdl/
 COPY engine/ ./engine/
 COPY tests/ ./tests/
 

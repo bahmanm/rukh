@@ -581,8 +581,7 @@ std::string UCIEngine::format_score(const Score& s) {
 }
 //from learning begin
 int UCIEngine::getNormalizeToPawnValue(Position& pos) {
-    auto [a, b] = WDLModel::win_rate_params(pos);
-    return a;
+    return static_cast<int>(WDLModel::score_normalisation_factor(pos));
 }
 //from learning end
 
@@ -592,9 +591,9 @@ int UCIEngine::to_cp(Value v, const Position& pos) {
 
     // In general, the score can be defined via the WDL as
     // (log(1/L - 1) - log(1/W - 1)) / (log(1/L - 1) + log(1/W - 1)).
-    // Based on our win_rate_model, this simply yields v / a.
+    // The score normalisation model reduces this conversion to v / a.
 
-    auto [a, b] = WDLModel::win_rate_params(pos);
+    const double a = WDLModel::score_normalisation_factor(pos);
 
     return int(std::round(100 * int(v) / a));
 }

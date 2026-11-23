@@ -406,10 +406,7 @@ std::string Eval::trace(Position& pos, const Eval::NNUE::Networks& networks, boo
     std::stringstream ss;
 
     // Inizializza il modello WDL se necessario
-    if (!WDLModel::is_initialized())
-    {
-        WDLModel::init();
-    }
+    WDLModel::init();
 
     // Calcola la valutazione finale
     Value v = evaluate(networks, pos, *accumulators, *caches, VALUE_ZERO);
