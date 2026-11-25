@@ -1,13 +1,13 @@
 ifndef __rukh_engine_Makefile
 __rukh_engine_Makefile := 1
 
-rukh.engine.configure : rukh.support.install rukh.wdl.install ## Configure the engine CMake project
+rukh.engine.configure : rukh.support.install rukh.wdl.install rukh.chess-core.install ## Configure the engine CMake project
 	$(RUKH_CMAKE) \
 		-S "$(ROOT)engine" \
 		-B "$(RUKH_ENGINE_BUILD_DIR)" \
 		$(if $(RUKH_CMAKE_GENERATOR),-G "$(RUKH_CMAKE_GENERATOR)") \
 		-DCMAKE_BUILD_TYPE=$(RUKH_CMAKE_BUILD_TYPE) \
-		-DCMAKE_PREFIX_PATH="$(RUKH_SUPPORT_INSTALL_DIR);$(RUKH_WDL_INSTALL_DIR)" \
+		-DCMAKE_PREFIX_PATH="$(RUKH_SUPPORT_INSTALL_DIR);$(RUKH_WDL_INSTALL_DIR);$(RUKH_CHESS_CORE_INSTALL_DIR)" \
 		$(RUKH_CMAKE_CONFIGURE_ARGS)
 .PHONY : rukh.engine.configure
 

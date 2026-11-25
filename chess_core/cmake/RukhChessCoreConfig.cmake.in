@@ -1,0 +1,6 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+find_dependency(rukh_support CONFIG REQUIRED)
+include("${CMAKE_CURRENT_LIST_DIR}/RukhChessCoreTargets.cmake")
+check_required_components(rukh_chess_core)
