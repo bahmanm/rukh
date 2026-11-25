@@ -17,8 +17,9 @@ set_target_properties(rukh_chess_core PROPERTIES EXPORT_NAME RukhChessCore)
 target_include_directories(rukh_chess_core PUBLIC
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
     "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
+target_include_directories(rukh_chess_core PRIVATE
+    "$<TARGET_PROPERTY:RukhSupport::RukhSupport,INTERFACE_INCLUDE_DIRECTORIES>")
 target_compile_features(rukh_chess_core PUBLIC cxx_std_23)
-target_link_libraries(rukh_chess_core PUBLIC RukhSupport::RukhSupport)
 target_compile_definitions(rukh_chess_core PUBLIC IS_64BIT)
 target_compile_options(rukh_chess_core PRIVATE
     $<$<CXX_COMPILER_ID:Clang>:-Wall;-Wextra;-Wpedantic;-Wcast-qual>)
