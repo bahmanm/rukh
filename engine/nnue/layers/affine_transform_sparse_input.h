@@ -26,7 +26,7 @@
 #include <cstdint>
 #include <iostream>
 
-#include "../../bitboard.h"
+#include <rukh/chess/core/bitboard.h>
 #include "../simd.h"
 #include "../nnue_common.h"
 
