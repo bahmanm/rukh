@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.28)
 
 project(rukh-chess-core VERSION 1.0.0 LANGUAGES CXX)
 include("${CMAKE_CURRENT_SOURCE_DIR}/../etc/cmake/platform-check.cmake")
+include(CTest)
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 find_package(rukh_support CONFIG REQUIRED)
@@ -21,6 +22,12 @@ target_link_libraries(rukh_chess_core PUBLIC RukhSupport::RukhSupport)
 target_compile_definitions(rukh_chess_core PUBLIC IS_64BIT)
 target_compile_options(rukh_chess_core PRIVATE
     $<$<CXX_COMPILER_ID:Clang>:-Wall;-Wextra;-Wpedantic;-Wcast-qual>)
+
+if(BUILD_TESTING)
+    add_executable(rukh_chess_core_tests tests/chess_core_tests.cpp)
+    target_link_libraries(rukh_chess_core_tests PRIVATE RukhChessCore::RukhChessCore)
+    add_test(NAME rukh-chess-core COMMAND rukh_chess_core_tests)
+endif()
 
 install(TARGETS rukh_chess_core EXPORT RukhChessCoreTargets
     ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"

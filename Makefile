@@ -14,7 +14,7 @@ rukh.configure : rukh.support.configure rukh.wdl.configure rukh.chess-core.confi
 rukh.build : rukh.support.build rukh.wdl.build rukh.chess-core.build rukh.engine.build ## Build all Rukh components
 .PHONY : rukh.build
 
-rukh.test : rukh.support.test rukh.wdl.test rukh.engine.test ## Run Rukh tests
+rukh.test : rukh.support.test rukh.wdl.test rukh.chess-core.test rukh.engine.test ## Run Rukh tests
 .PHONY : rukh.test
 
 rukh.install : rukh.support.install rukh.wdl.install rukh.chess-core.install rukh.engine.install ## Install all Rukh components

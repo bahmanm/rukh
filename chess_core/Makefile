@@ -12,6 +12,10 @@ rukh.chess-core.build : rukh.chess-core.configure ## Build chess_core
 	$(RUKH_CMAKE) --build "$(RUKH_CHESS_CORE_BUILD_DIR)" --config $(RUKH_CMAKE_BUILD_TYPE) --parallel $(RUKH_CMAKE_BUILD_ARGS)
 .PHONY : rukh.chess-core.build
 
+rukh.chess-core.test : rukh.chess-core.build ## Run chess_core tests
+	$(RUKH_CTEST) --test-dir "$(RUKH_CHESS_CORE_BUILD_DIR)" -C $(RUKH_CMAKE_BUILD_TYPE) --output-on-failure
+.PHONY : rukh.chess-core.test
+
 rukh.chess-core.install : rukh.chess-core.build ## Install chess_core
 	$(RUKH_CMAKE) --install "$(RUKH_CHESS_CORE_BUILD_DIR)" --config $(RUKH_CMAKE_BUILD_TYPE) --prefix "$(RUKH_CHESS_CORE_INSTALL_DIR)"
 .PHONY : rukh.chess-core.install
