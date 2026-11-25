@@ -18,7 +18,7 @@ namespace Eval {
 namespace NNUE {
 struct Networks;
 struct AccumulatorCaches;
-struct AccumulatorStack; // Forward dec necessaria
+class AccumulatorStack; // Forward dec necessaria
 }
 }
 

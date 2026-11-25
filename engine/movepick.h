@@ -23,7 +23,7 @@
 //from shashin begin
 #include "shashin/shashin_position.h"
 #include "shashin/moveconfig.h"
-#include "bitboard.h"
+#include <rukh/chess/core/bitboard.h>
 //from shashin end
 namespace ShashChess {
 static constexpr uint8_t AdjPawnCount[8] = {0, 1, 2, 2, 2, 2, 1, 0};

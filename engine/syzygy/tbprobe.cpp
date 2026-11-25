@@ -39,7 +39,7 @@
 
 #include <rukh/support/endian.h>
 
-#include "../bitboard.h"
+#include <rukh/chess/core/bitboard.h>
 #include "../misc.h"
 #include "../movegen.h"
 #include "../position.h"

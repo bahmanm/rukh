@@ -27,7 +27,7 @@
 #include <unordered_map>
 #include <utility>
 
-#include "bitboard.h"
+#include <rukh/chess/core/bitboard.h>
 #include "history.h"
 #include <rukh/support/memory.h>
 #include "movegen.h"

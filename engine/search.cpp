@@ -47,7 +47,7 @@ Local assessments: Penalize or reward based on king's security, tactical complex
 #include <string>
 #include <utility>
 
-#include "bitboard.h"
+#include <rukh/chess/core/bitboard.h>
 #include "evaluate.h"
 #include "history.h"
 #include "misc.h"

@@ -19,7 +19,7 @@
 #include <iostream>
 #include <memory>
 
-#include "bitboard.h"
+#include <rukh/chess/core/bitboard.h>
 #include "misc.h"
 #include "position.h"
 #include "tune.h"

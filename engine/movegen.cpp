@@ -21,7 +21,7 @@
 #include <cassert>
 #include <initializer_list>
 
-#include "bitboard.h"
+#include <rukh/chess/core/bitboard.h>
 #include "position.h"
 
 #if defined(USE_AVX512ICL)

@@ -17,12 +17,12 @@ find_package(Threads REQUIRED)
 find_package(CURL REQUIRED)
 find_package(rukh_support CONFIG REQUIRED)
 find_package(rukh_wdl CONFIG REQUIRED)
+find_package(rukh_chess_core CONFIG REQUIRED)
 
 set(RUKH_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 
 set(RUKH_SOURCES
     benchmark.cpp
-    bitboard.cpp
     book/book.cpp
     book/book_manager.cpp
     book/ctg/ctg.cpp
@@ -80,6 +80,7 @@ target_compile_options(rukh PRIVATE
 target_link_libraries(rukh PRIVATE
     RukhSupport::RukhSupport
     RukhWdl::RukhWdl
+    RukhChessCore::RukhChessCore
     CURL::libcurl
     Threads::Threads
 )

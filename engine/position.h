@@ -27,7 +27,7 @@
 #include <new>
 #include <string>
 
-#include "bitboard.h"
+#include <rukh/chess/core/bitboard.h>
 #include "types.h"
 #include "movegen.h"  //shashin
 

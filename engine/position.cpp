@@ -31,7 +31,7 @@
 #include <string_view>
 #include <utility>
 
-#include "bitboard.h"
+#include <rukh/chess/core/bitboard.h>
 #include "history.h"
 #include "misc.h"
 #include <rukh/support/prefetch.h>
